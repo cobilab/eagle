@@ -10,10 +10,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void FreeCModel(CModel *cModel)
+static void InitHashTable(CModel *cModel)
   {
-  Free(cModel->array.counters);
-  Free(cModel);
+  cModel->hash.keys      = (KEYSMAX **) Calloc(HASH_SIZE, sizeof(KEYSMAX *));
+  cModel->hash.entrySize = (ENTMAX   *) Calloc(HASH_SIZE, sizeof(ENTMAX   ));
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,10 +43,20 @@ CModel *CreateCModel(uint32_t ctx, uint32_t ir)
   multipliers           = (uint64_t *) Calloc(ctx, sizeof(uint64_t));
   cModel->nPModels      = (uint64_t) pow(ALPHABET_SIZE, ctx);
   cModel->ctx           = ctx;
-  cModel->pModelIdx     = 0;
-  cModel->pModelIdxIR   = cModel->nPModels - 1;
+  cModel->idx           = 0;
+  cModel->idxIR         = cModel->nPModels - 1;
   cModel->ir            = ir  == 0 ? 0 : 1;
-  InitArray(cModel);
+
+  if(ctx >= HASH_TABLE_BEGIN_CTX)
+    {
+    cModel->mode = HASH_TABLE_MODE;
+    InitHashTable(cModel);
+    }
+  else
+    {
+    cModel->mode = ARRAY_MODE;
+    InitArray(cModel);
+    }
   
   for(n = 0 ; n != cModel->ctx ; ++n)
     {
@@ -61,24 +71,92 @@ CModel *CreateCModel(uint32_t ctx, uint32_t ir)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void ResetCModelIdx(CModel *cModel)
+void ResetIdx(CModel *cModel)
   {
-  cModel->pModelIdx   = 0;
-  cModel->pModelIdxIR = cModel->nPModels - 1;
+  cModel->idx   = 0;
+  cModel->idxIR = cModel->nPModels - 1;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetPModelIdxIR(uint8_t *p, CModel *M)
+inline void GetIdxIR(uint8_t *p, CModel *M)
   {
-  M->pModelIdxIR = (M->pModelIdxIR >> 2) + GetCompNum(*p) * M->multiplier;
+  M->idxIR = (M->idxIR >> 2) + GetCompNum(*p) * M->multiplier;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetPModelIdx(uint8_t *p, CModel *M)
+inline void GetIdx(uint8_t *p, CModel *M)
   {
-  M->pModelIdx = ((M->pModelIdx - *(p - M->ctx) * M->multiplier) << 2) + *p;
+  M->idx = ((M->idx - *(p - M->ctx) * M->multiplier) << 2) + *p;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+static void InsertKey(Hash *hash, unsigned hIndex, uint64_t key)
+  {
+  hash->keys[hIndex] = (KEYSMAX *) Realloc(hash->keys[hIndex],
+  (hash->entrySize[hIndex] + 1) * sizeof(KEYSMAX), sizeof(KEYSMAX));
+
+  hash->keys[hIndex][hash->entrySize[hIndex]] = key;
+  hash->entrySize[hIndex]++;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void UpdateIR(CModel *cModel)
+  {
+  unsigned   n;
+  uint64_t   idx = cModel->idxIR;
+
+  if(cModel->mode == HASH_TABLE_MODE)
+    {
+    unsigned hIndex = idx % HASH_SIZE;                       // The hash index
+
+    for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
+      if(cModel->hash.keys[hIndex][n] == idx)                  // If key found
+        return;
+
+    InsertKey(&cModel->hash, hIndex, idx);                 // If key not found
+    }
+  else
+    {
+    cModel->array.counters[idx] = 1;
+    }
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void Update(CModel *cModel)
+  {
+  unsigned   n;
+  uint64_t   idx = cModel->idx;
+
+  if(cModel->mode == HASH_TABLE_MODE)
+    {
+    unsigned hIndex = idx % HASH_SIZE;                       // The hash index
+
+    for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
+      if(cModel->hash.keys[hIndex][n] == idx)                  // If key found
+        return;
+
+    InsertKey(&cModel->hash, hIndex, idx);                 // If key not found
+    }
+  else
+    {
+    cModel->array.counters[idx] = 1;
+    }
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void NEntries(CModel *cModel)
+  {
+  uint32_t max = 0, k;
+  for(k = 0 ; k < HASH_SIZE ; ++k)
+    if(max < cModel->hash.entrySize[k])
+      max = cModel->hash.entrySize[k];
+  fprintf(stderr, "Maximum hash entry size: %u\n", max);       
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

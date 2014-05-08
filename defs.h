@@ -23,7 +23,9 @@ typedef struct
   char     *ref;
   char     **tar;
   uint8_t  nTar;
-  uint64_t size;
+  uint32_t pt;
+  int32_t  sub;
+  uint64_t *size;
   }
 Parameters;
 
@@ -37,14 +39,23 @@ uint32_t garbage;
 #define DEFAULT_VERBOSE        0
 #define DEFAULT_IR             0
 #define DEFAULT_CTX            13
-#define MAX_CTX                15
+#define MAX_CTX                31
 #define MIN_CTX                1
-#define HASH_TABLE_BEGIN_CTX   15
 #define BGUARD                 32
 #define DEFAULT_MAX_COUNT      ((1 << (sizeof(ACCounter) * 8)) - 1)
 #define MX_PMODEL              65535
 #define DEFAULT_HASH_SIZE      39999999
 #define ALPHABET_SIZE          4
+#define HASH_TABLE_MODE        1
+#define HASH_SIZE              29000000 //100000000
+#define ARRAY_MODE             0
+#define HASH_TABLE_BEGIN_CTX   17
+#define MATCH_SYMBOL           48 //88
+#define UNIQUE_SYMBOL          49 //45
+#define NO_MATCH_REGION        0             
+#define MATCHED_REGION         1               
+#define DEFAULT_SUBSAMPLE      -1
+#define DEFAULT_SAMPLE_RATIO   50000 // 10000
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
