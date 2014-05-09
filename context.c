@@ -36,6 +36,8 @@ CModel *CreateCModel(uint32_t ctx, uint32_t ir)
 
   if(ctx > MAX_CTX)
     {
+    if(ctx == 32)
+      fprintf(stderr, "Warning: context 32 is reserved to Magic Johnson.\n");
     fprintf(stderr, "Error: context cannot be greater than %d\n", MAX_CTX);
     exit(1);
     }
