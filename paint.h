@@ -11,9 +11,9 @@
 #define DEFAULT_SPACE          10                 // SPACE BETWEEN CHROMOSOMES
 #define DEFAULT_SCALE          100000                // SCALE FOR CHROMOSOMES
 #define EXTRA                  150                   // EXTRA SPACE FOR BORDER
-#define LEVEL_SATURATION       120
-#define LEVEL_VALUE            100
-#define LEVEL_HUE              120
+#define LEVEL_SATURATION       230
+#define LEVEL_VALUE            130
+#define LEVEL_HUE              150
 
 typedef struct
   {
