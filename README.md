@@ -1,4 +1,5 @@
 eagle
 =====
 
-Search for k-mer words in sequences using a reference sequence
+Search for absent k-mer words in sequences using a reference sequence.
+It builds an image with patterns reporting the absent words regions as well as report the position into a file.
