@@ -9,11 +9,12 @@
 #define DEFAULT_TY             82.0                        // Y COORD FOR TEXT
 #define DEFAULT_WIDTH          20.0                   // CHROMOSOMES THICKNESS
 #define DEFAULT_SPACE          10                 // SPACE BETWEEN CHROMOSOMES
-#define DEFAULT_SCALE          100000                // SCALE FOR CHROMOSOMES
+#define DEFAULT_SCALE          100000                 // SCALE FOR CHROMOSOMES
 #define EXTRA                  150                   // EXTRA SPACE FOR BORDER
-#define LEVEL_SATURATION       230
-#define LEVEL_VALUE            130
+#define LEVEL_SATURATION       220 
+#define LEVEL_VALUE            160
 #define LEVEL_HUE              150
+#define LEVEL_HUE_N            1                              // N's HUE COLOR
 
 typedef struct
   {

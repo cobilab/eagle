@@ -10,6 +10,8 @@
 #include "context.h"
 #include "paint.h"
 
+//TODO: USE DEFAULT ENLARGE = SUSAMPLE
+//TODO: hide N's from plot
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - - - S U B S A M P L E - - - - - - - - - - - -
@@ -68,7 +70,24 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
     for(idxPos = 0 ; idxPos < k ; ++idxPos)
       {
       sym = DNASymToNum(readerBuffer[idxPos]);
-      if(sym == 4) continue;
+      if(sym == 4) 
+        {
+        if(i % P->sub == 0)
+          Rect(Plot, Paint->width, GetPoint(1+P->ptN), Paint->cx,
+          Paint->cy + GetPoint(i+1), GetRgbColor(LEVEL_HUE_N));
+
+        // TODO: Stop block or erase them from positions file
+
+        #ifdef STREAM
+        writterBuffer[idxPos] = N_SYMBOL;
+        #endif
+
+        ++i;
+        #ifdef PROGRESS
+        CalcProgress(nSymbols, i);
+        #endif
+        continue;
+        }
       symbolBuffer[idx] = sym;
 
       GetIdx(symbolBuffer+idx-1, cModel);            
@@ -99,8 +118,8 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
         else  // NO WORD FOUND
           {
           if(i % P->sub == 0)
-            Rect(Plot, Paint->width, GetPoint(i-init+1+P->pt), Paint->cx,
-            Paint->cy + GetPoint(init+1), GetRgbColor(LEVEL_HUE));
+            Rect(Plot, Paint->width, GetPoint(1+P->pt), Paint->cx,
+            Paint->cy + GetPoint(i+1), GetRgbColor(LEVEL_HUE));
 
           #ifdef STREAM
           writterBuffer[idxPos] = UNIQUE_SYMBOL; 
@@ -142,8 +161,8 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
         if(found == 0) // NO WORD FOUND
           {
           if(i % P->sub == 0)
-            Rect(Plot, Paint->width, GetPoint(i-init+1+P->pt), Paint->cx,
-            Paint->cy + GetPoint(init+1), GetRgbColor(LEVEL_HUE));
+            Rect(Plot, Paint->width, GetPoint(1+P->pt), Paint->cx,
+            Paint->cy + GetPoint(i+1), GetRgbColor(LEVEL_HUE));
           #ifdef STREAM
           writterBuffer[idxPos] = UNIQUE_SYMBOL;
           #endif
@@ -282,7 +301,8 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "  -v                       verbose mode             \n");
     fprintf(stderr, "  -c  <ctx>                context size model       \n");
     fprintf(stderr, "  -i                       use inversions           \n");
-    fprintf(stderr, "  -e  <pts>                enlarge line             \n");
+    fprintf(stderr, "  -ea <pts>                enlarge absent           \n");
+    fprintf(stderr, "  -en <pts>                enlarge N's              \n");
     fprintf(stderr, "  -s  <sub>                sub-sample               \n");
     fprintf(stderr, "  -r  <rFile>              reference file (database)\n");
     fprintf(stderr, "                                                    \n");
@@ -293,12 +313,13 @@ int32_t main(int argc, char *argv[])
   fprintf(stderr, "===============> Eagle v1.0 <=============\n");
   
   P->model        = (ModelPar *) Calloc(1, sizeof(ModelPar));
-  P->verbose      = ArgsState  (DEFAULT_VERBOSE  , p, argc, "-v");
-  P->model[0].ir  = ArgsState  (DEFAULT_IR       , p, argc, "-i");
-  P->model[0].ctx = ArgsNumber (DEFAULT_CTX      , p, argc, "-c");
-  P->pt           = ArgsNumber (0                , p, argc, "-e");
-  P->sub          = ArgsNumber (DEFAULT_SUBSAMPLE, p, argc, "-s");
-  P->ref          = ArgsString (NULL             , p, argc, "-r");
+  P->verbose      = ArgsState  (DEFAULT_VERBOSE  , p, argc, "-v" );
+  P->model[0].ir  = ArgsState  (DEFAULT_IR       , p, argc, "-i" );
+  P->model[0].ctx = ArgsNumber (DEFAULT_CTX      , p, argc, "-c" );
+  P->pt           = ArgsNumber (0                , p, argc, "-ea");
+  P->ptN          = ArgsNumber (0                , p, argc, "-en");
+  P->sub          = ArgsNumber (DEFAULT_SUBSAMPLE, p, argc, "-s" );
+  P->ref          = ArgsString (NULL             , p, argc, "-r" );
   P->nTar         = ReadFNames (P, argv[argc-1]);
   if(P->verbose) 
     {

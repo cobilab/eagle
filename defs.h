@@ -24,6 +24,7 @@ typedef struct
   char     **tar;
   uint8_t  nTar;
   uint32_t pt;
+  uint32_t ptN;
   int32_t  sub;
   uint64_t *size;
   }
@@ -52,6 +53,7 @@ uint32_t garbage;
 #define HASH_TABLE_BEGIN_CTX   17
 #define MATCH_SYMBOL           48 //88
 #define UNIQUE_SYMBOL          49 //45
+#define N_SYMBOL               78 //'N'
 #define NO_MATCH_REGION        0             
 #define MATCHED_REGION         1               
 #define DEFAULT_SUBSAMPLE      -1

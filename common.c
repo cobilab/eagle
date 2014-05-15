@@ -75,6 +75,7 @@ uint64_t NDNASyminFile(FILE *file)
         case 'T': ++nSymbols; break;
         case 'C': ++nSymbols; break;
         case 'G': ++nSymbols; break;
+        default : ++nSymbols; break;
         }
 
   rewind(file);
@@ -122,7 +123,7 @@ uint8_t DNASymToNum(uint8_t symbol)
     case 'T': return 3;
     case 'C': return 1;
     case 'G': return 2;
-    default : return 5;
+    default : return 4;
     }
   }
 
