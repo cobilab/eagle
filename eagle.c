@@ -136,7 +136,9 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
         found = 0;
         hIndex = cModel->idx % HASH_SIZE;
         for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
-          if(cModel->hash.keys[hIndex][n] == cModel->idx)
+          if(((uint64_t) cModel->hash.keys[hIndex][n] * HASH_SIZE) + hIndex == 
+          cModel->idx)
+          //if(cModel->hash.keys[hIndex][n] == cModel->idx)
             {
             #ifdef STREAM
             writterBuffer[idxPos] = MATCH_SYMBOL;

@@ -26,28 +26,26 @@ static void InitArray(CModel *cModel)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-CModel *CreateCModel(uint32_t ctx, uint32_t ir) 
+CModel *CreateCModel(U32 ctx, U32 ir) 
   {
-  CModel    *cModel;
-  uint64_t  prod = 1, *multipliers;
-  uint32_t  n;
+  CModel *cModel;
+  U64    prod = 1, *multipliers;
+  U32    n;
 
   cModel = (CModel *) Calloc(1, sizeof(CModel));
 
-  if(ctx > MAX_CTX)
+  if(ctx > MAX_HASH_CTX)
     {
-    if(ctx == 32)
-      fprintf(stderr, "Warning: context 32 is reserved to Magic Johnson.\n");
-    fprintf(stderr, "Error: context cannot be greater than %d\n", MAX_CTX);
+    fprintf(stderr, "Error: context is greater than %d!\n", MAX_HASH_CTX);
     exit(1);
     }
   
-  multipliers           = (uint64_t *) Calloc(ctx, sizeof(uint64_t));
-  cModel->nPModels      = (uint64_t) pow(ALPHABET_SIZE, ctx);
-  cModel->ctx           = ctx;
-  cModel->idx           = 0;
-  cModel->idxIR         = cModel->nPModels - 1;
-  cModel->ir            = ir  == 0 ? 0 : 1;
+  multipliers       = (U64*) Calloc(ctx, sizeof(U64));
+  cModel->nPModels  = (U64) pow(ALPHABET_SIZE, ctx);
+  cModel->ctx       = ctx;
+  cModel->idx       = 0;
+  cModel->idxIR     = cModel->nPModels - 1;
+  cModel->ir        = ir  == 0 ? 0 : 1;
 
   if(ctx >= HASH_TABLE_BEGIN_CTX)
     {
@@ -81,26 +79,26 @@ void ResetIdx(CModel *cModel)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetIdxIR(uint8_t *p, CModel *M)
+inline void GetIdxIR(U8 *p, CModel *M)
   {
   M->idxIR = (M->idxIR >> 2) + GetCompNum(*p) * M->multiplier;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetIdx(uint8_t *p, CModel *M)
+inline void GetIdx(U8 *p, CModel *M)
   {
   M->idx = ((M->idx - *(p - M->ctx) * M->multiplier) << 2) + *p;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static void InsertKey(Hash *hash, unsigned hIndex, uint64_t key)
+static void InsertKey(Hash *hash, U32 hIndex, U64 key)
   {
   hash->keys[hIndex] = (KEYSMAX *) Realloc(hash->keys[hIndex],
   (hash->entrySize[hIndex] + 1) * sizeof(KEYSMAX), sizeof(KEYSMAX));
 
-  hash->keys[hIndex][hash->entrySize[hIndex]] = key;
+  hash->keys[hIndex][hash->entrySize[hIndex]] = (U32) (key / HASH_SIZE);
   hash->entrySize[hIndex]++;
   }
 
@@ -108,54 +106,46 @@ static void InsertKey(Hash *hash, unsigned hIndex, uint64_t key)
 
 void UpdateIR(CModel *cModel)
   {
-  unsigned   n;
-  uint64_t   idx = cModel->idxIR;
+  U32 n;
+  U64 idx = cModel->idxIR;
 
   if(cModel->mode == HASH_TABLE_MODE)
     {
-    unsigned hIndex = idx % HASH_SIZE;                       // The hash index
-
+    U32 hIndex = idx % HASH_SIZE;                            // The hash index
     for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
-      if(cModel->hash.keys[hIndex][n] == idx)                  // If key found
+      if(((U64) cModel->hash.keys[hIndex][n] * HASH_SIZE) + hIndex == idx) 
         return;
-
     InsertKey(&cModel->hash, hIndex, idx);                 // If key not found
     }
   else
-    {
     cModel->array.counters[idx] = 1;
-    }
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void Update(CModel *cModel)
   {
-  unsigned   n;
-  uint64_t   idx = cModel->idx;
+  U32 n;
+  U64 idx = cModel->idx;
 
   if(cModel->mode == HASH_TABLE_MODE)
     {
-    unsigned hIndex = idx % HASH_SIZE;                       // The hash index
-
+    U32 hIndex = idx % HASH_SIZE;                            // The hash index
     for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
-      if(cModel->hash.keys[hIndex][n] == idx)                  // If key found
+      if(((U64) cModel->hash.keys[hIndex][n] * HASH_SIZE) + hIndex == idx) 
         return;
-
     InsertKey(&cModel->hash, hIndex, idx);                 // If key not found
     }
   else
-    {
     cModel->array.counters[idx] = 1;
-    }
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void NEntries(CModel *cModel)
   {
-  uint32_t max = 0, k;
-  for(k = 0 ; k < HASH_SIZE ; ++k)
+  U32 max = 0, k = 0;
+  for( ; k < HASH_SIZE ; ++k)
     if(max < cModel->hash.entrySize[k])
       max = cModel->hash.entrySize[k];
   fprintf(stderr, "Maximum hash entry size: %u\n", max);       

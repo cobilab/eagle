@@ -3,47 +3,53 @@
 
 #include "defs.h"
 
-typedef uint8_t   ACCounter;            // Size of context counters for arrays
-typedef uint16_t  ENTMAX;                // Entry size (nKeys for each hIndex)
-typedef uint64_t  KEYSMAX;                                  // keys index bits
+#define ARRAY_MODE            0
+#define HASH_TABLE_MODE       1
+#define HASH_TABLE_BEGIN_CTX  17
+#define HASH_SIZE             33554467        // first PRIME NUMBER after 2^25
+#define MAX_HASH_CTX          28
+
+typedef U8  ACCounter;                  // Size of context counters for arrays
+typedef U16 ENTMAX;                      // Entry size (nKeys for each hIndex)
+typedef U32 KEYSMAX;                                        // keys index bits
 
 typedef struct
   {
-  ENTMAX          *entrySize;                  // Number of keys in this entry
-  KEYSMAX         **keys;                  // The keys of the hash table lists
+  ENTMAX    *entrySize;                        // Number of keys in this entry
+  KEYSMAX   **keys;                        // The keys of the hash table lists
   }
 Hash;
 
 typedef struct
   {
-  ACCounter       *counters;
+  ACCounter *counters;
   }
 Array;
 
 typedef struct
   {
-  unsigned        ctx;                    // Current depth of context template
-  ULL             nPModels;            // Maximum number of probability models
-  uint64_t        multiplier;
-  uint64_t        idx;
-  uint64_t        idxIR;
-  uint8_t         ir;
-  Array           array;
-  Hash            hash;
-  uint8_t         mode;
+  U32       ctx;                          // Current depth of context template
+  U64       nPModels;                  // Maximum number of probability models
+  U64       multiplier;
+  U64       idx;
+  U64       idxIR;
+  U8        ir;
+  Array     array;
+  Hash      hash;
+  U8        mode;
   }
 CModel;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void    GetIdx                (uint8_t *, CModel *);
-inline void    GetIdxIR              (uint8_t *, CModel *);
-void           ResetCModelIdx        (CModel *);
-CModel         *CreateCModel         (uint32_t, uint32_t);
-void           ResetIdx              (CModel *);
-void           UpdateIR              (CModel *);
-void           Update                (CModel *);
-void           NEntries              (CModel *);
+inline void    GetIdx           (U8 *, CModel *);
+inline void    GetIdxIR         (U8 *, CModel *);
+CModel         *CreateCModel    (U32, U32);
+void           ResetCModelIdx   (CModel *);
+void           ResetIdx         (CModel *);
+void           UpdateIR         (CModel *);
+void           Update           (CModel *);
+void           NEntries         (CModel *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

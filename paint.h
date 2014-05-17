@@ -62,7 +62,7 @@ void      Chromosome     (FILE *, double, double, double, double);
 void      Text           (FILE *, double, double, char *);
 void      TextFloat      (FILE *, double, double, double);
 void      SetScale       (double);
-double    GetPoint       (ULL);
+double    GetPoint       (U64);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

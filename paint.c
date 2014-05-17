@@ -282,7 +282,7 @@ void SetScale(double max)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-double GetPoint(ULL p)
+double GetPoint(U64 p)
   {
   return p / (double) scale * 5;
   }
