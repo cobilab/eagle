@@ -24,7 +24,7 @@ FILE *Fopen(const char *p, const char *m){
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#define MAX 	100
+#define MAX 	105
 #define LENGTH 	19000
 
 int main(int argc, char *argv[]){
