@@ -28,6 +28,7 @@ typedef struct
   uint8_t  verbose;
   ModelPar *model;
   char     *ref;
+  char     *output;
   char     **tar;
   uint8_t  nTar;
   uint32_t pt;
@@ -38,6 +39,7 @@ typedef struct
 Parameters;
 
 uint32_t garbage;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // SYSTEM VALUES:

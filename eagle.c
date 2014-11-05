@@ -46,7 +46,8 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
   char        *name2     = concatenate(P->tar[id], ".pos");
   FILE        *Positions = Fopen(name2, "w");
   #endif
-  uint64_t    nSymbols = NDNASyminFile(Reader), i = 0, init, repeated = 0;
+  uint64_t    nSymbols = NDNASyminFile(Reader), i = 0, init, repeated = 0,
+              unknown = 0;
   uint32_t    n, k, idxPos, hIndex;
   int32_t     idx = 0;
   uint8_t     *writterBuffer, *readerBuffer, *symbolBuffer, sym, region, 
@@ -86,6 +87,7 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
         #ifdef PROGRESS
         CalcProgress(nSymbols, i);
         #endif
+        ++unknown;
         continue;
         }
       symbolBuffer[idx] = sym;
@@ -213,8 +215,9 @@ void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE
   Free(symbolBuffer-BGUARD);
   fclose(Reader);
 
+  fprintf(stderr, "Found: %"PRIu64" unknown symbols.\n", unknown);
   fprintf(stderr, "Repeated: %.4lf %% (%"PRIu64" in %"PRIu64")\n", (double) 
-  repeated / nSymbols * 100.0, repeated, nSymbols);  
+  repeated / (nSymbols-unknown) * 100.0, repeated, nSymbols-unknown);  
 
   if(P->verbose == 1)
     fprintf(stderr, "Done!                          \n");  // SPACES ARE VALID 
@@ -298,7 +301,7 @@ int32_t main(int argc, char *argv[])
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
     fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "Usage: Eagle [OPTIONS]... -r [FILE]  [FILE]:[...]   \n");
+    fprintf(stderr, "Usage: Eagle <OPTIONS>... -r [FILE]  [FILE]:<...>   \n");
     fprintf(stderr, "                                                    \n");
     fprintf(stderr, "  -v                       verbose mode             \n");
     fprintf(stderr, "  -c  <ctx>                context size model       \n");
@@ -306,9 +309,11 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "  -ea <pts>                enlarge absent           \n");
     fprintf(stderr, "  -en <pts>                enlarge N's              \n");
     fprintf(stderr, "  -s  <sub>                sub-sample               \n");
-    fprintf(stderr, "  -r  <rFile>              reference file (database)\n");
+    fprintf(stderr, "  -o  <oFile>              output map file          \n");
     fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "  <tFile1>:<tFile2>:<...>  target file(s)         \n\n");
+    fprintf(stderr, "  -r  [rFile]              reference file (database)\n");
+    fprintf(stderr, "                                                    \n");
+    fprintf(stderr, "  [tFile1]:<tFile2>:<...>  target file(s)         \n\n");
     return EXIT_SUCCESS;
     }
 
@@ -322,6 +327,7 @@ int32_t main(int argc, char *argv[])
   P->ptN          = ArgsNumber (0                , p, argc, "-en");
   P->sub          = ArgsNumber (DEFAULT_SUBSAMPLE, p, argc, "-s" );
   P->ref          = ArgsString (NULL             , p, argc, "-r" );
+  P->output       = ArgsString ("plot"           , p, argc, "-o" );
   P->nTar         = ReadFNames (P, argv[argc-1]);
   if(P->verbose) 
     {
@@ -331,7 +337,7 @@ int32_t main(int argc, char *argv[])
 
   refModels = LoadReference(P);
 
-  char     *name       = concatenate("plot", ".svg");
+  char     *name       = concatenate(P->output, ".svg");
   FILE     *Plot       = Fopen(name, "w");
   char     backColor[] = "#ffffff";
   Painter  *Paint;
