@@ -56,7 +56,7 @@ for((x=12 ; x<=15 ; ++x));
   done
   ./rebat data2
 # =============================================================================
-# BUILD 3D PLOT
+# BUILD 3D MAP
 echo 'set mapping cartesian
 set view 80,10,1,1 #0,0,1,1
 set auto
@@ -72,3 +72,4 @@ set ylabel "Strain"
 set xlabel "Length"
 splot "data2" u 2:1:3 with points pt 1 palette
 ' | gnuplot -persist
+# =============================================================================
