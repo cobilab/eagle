@@ -50,18 +50,15 @@ or
 </pre>
 These will print the following options:
 <pre>
-Usage: Eagle ```<OPTIONS>... -r [FILE]  [FILE]:<...>```  
+Usage: Eagle &#60OPTIONS>... -r [FILE]  [FILE]:&#60...>```  
 
-&lt
-&#60
-                                                    
   -v                       verbose mode             
-  -c  <ctx>                context size model       
+  -c  &#60ctx>                context size model       
   -i                       use inversions           
-  -ea <pts>                enlarge absent           
-  -en <pts>                enlarge N's              
-  -s  <sub>                sub-sample               
-  -o  <oFile>              output map file          
+  -ea &#60pts>                enlarge absent           
+  -en &#60pts>                enlarge N's              
+  -s  &#60sub>                sub-sample               
+  -o  &#60oFile>              output map file          
                                                     
   -r  [rFile]              reference file (database)
                                                     
