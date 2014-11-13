@@ -50,19 +50,19 @@ or
 </pre>
 These will print the following options:
 <pre>
-Usage: Eagle &#60 OPTIONS>... -r [FILE]  [FILE]:&#60...>```  
+Usage: Eagle &#60 OPTIONS &#62 ... -r [FILE]  [FILE]: &#60 ... &#62
 
   -v                       verbose mode             
-  -c  &#60 ctx>                context size model       
+  -c  &#60 ctx &#62                context size model       
   -i                       use inversions           
-  -ea &#60 pts>                enlarge absent           
-  -en &#60 pts>                enlarge N's              
-  -s  &#60 sub>                sub-sample               
-  -o  &#60 oFile>              output map file          
+  -ea &#60 pts &#62                enlarge absent           
+  -en &#60 pts &#62                enlarge N's              
+  -s  &#60 sub &#62                sub-sample               
+  -o  &#60 oFile &#62              output map file          
                                                     
   -r  [rFile]              reference file (database)
                                                     
-  [tFile1]:<tFile2>:<...>  target file(s)         
+  [tFile1]: &#60 tFile2 &#62 : &#60 ... &#62  target file(s)         
 </pre>
 
 ## CITATION ##
