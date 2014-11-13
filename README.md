@@ -50,7 +50,7 @@ or
 </pre>
 These will print the following options:
 <pre>
-Usage: Eagle <OPTIONS>... -r [FILE]  [FILE]:<...>   
+Usage: Eagle '<'OPTIONS>... -r [FILE]  [FILE]:<...>  
                                                     
   -v                       verbose mode             
   -c  <ctx>                context size model       
@@ -65,5 +65,22 @@ Usage: Eagle <OPTIONS>... -r [FILE]  [FILE]:<...>
   [tFile1]:<tFile2>:<...>  target file(s)         
 </pre>
 
+## CITATION ##
+
+On using this software/method please cite:
+
+Paper currently submitted.
+DOI: doi-to-appear
+
+## ISSUES ##
+
+For any issue let us know at [issues link](https://github.com/eagle/smash/issues).
+
+## LICENSE ##
+
+GPL v2.
+
+For more information:
+<pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
 
 
