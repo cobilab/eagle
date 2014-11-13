@@ -50,7 +50,7 @@ or
 </pre>
 These will print the following options:
 <pre>
-Usage: Eagle '<'OPTIONS>... -r [FILE]  [FILE]:<...>  
+Usage: Eagle ```<OPTIONS>... -r [FILE]  [FILE]:<...>```  
                                                     
   -v                       verbose mode             
   -c  <ctx>                context size model       
