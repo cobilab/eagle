@@ -38,4 +38,32 @@ sudo apt-get install gnuplot
 
 to install.
 
+## PARAMETERS
+
+To see the possible options type
+<pre>
+./smash
+</pre>
+or
+<pre>
+./smash -h
+</pre>
+These will print the following options:
+<pre>
+Usage: Eagle <OPTIONS>... -r [FILE]  [FILE]:<...>   
+                                                    
+  -v                       verbose mode             
+  -c  <ctx>                context size model       
+  -i                       use inversions           
+  -ea <pts>                enlarge absent           
+  -en <pts>                enlarge N's              
+  -s  <sub>                sub-sample               
+  -o  <oFile>              output map file          
+                                                    
+  -r  [rFile]              reference file (database)
+                                                    
+  [tFile1]:<tFile2>:<...>  target file(s)         
+</pre>
+
+
 
