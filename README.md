@@ -3,7 +3,7 @@
 ![ScreenShot](/logo.png)
 
 Search for **relative absent words (RAW)** in genomic sequences using a reference sequence.
-It builds an image with patterns reporting the absent words regions as well as report the position into a file.
+Currently, eagle runs on command line linux environment, building an image with patterns reporting the absent words regions as well as reporting the associated positions into a file.
 
 ## INSTALLATION ##
 
@@ -20,9 +20,22 @@ make
 Note that these instructions will install EAGLE and several minimal programs to 
 cope with specific needs, such as 3D visualization on Gnuplot.
 
+## EXECUTION
+
+### Run EAGLE
+
+Run eagle using:
+
+<pre>
+./eagle -v -c 11 -i -r HG -t SEQ
+</pre>
+
+for search RAWs with size 11 that are absent from the human genome and present in
+a specific genomic sequence (SEQ).
+
 ### Run 99 Ebola virus using human as reference
 
-Simply type:
+For a current outbreak example run:
 
 <pre>
 . RunAll.sh
@@ -37,16 +50,19 @@ sudo apt-get install gnuplot
 </pre>
 
 to install.
+The output will be a 3D interactive plot, such as the following example:
+
+![ScreenShot](/ebola.png)
 
 ## PARAMETERS
 
 To see the possible options type
 <pre>
-./smash
+./eagle
 </pre>
 or
 <pre>
-./smash -h
+./eagle -h
 </pre>
 These will print the following options:
 <pre>
