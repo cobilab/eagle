@@ -28,6 +28,7 @@ Simply type:
 . RunAll.sh
 </pre>
 
+It will download, filter and find RAWs with an output 3D plot.
 Nevertheless, make sure that you have gnuplot installed on your Linux box. 
 If not use:
 
