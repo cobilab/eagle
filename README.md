@@ -17,8 +17,24 @@ make cleanall
 make
 </pre>
 
+Note that these instructions will install EAGLE and several minimal programs to 
+cope with specific needs, such as 3D visualization on Gnuplot.
+
 ### Run 99 Ebola virus using human as reference
+
+Simply type:
 
 <pre>
 . RunAll.sh
 </pre>
+
+Nevertheless, make sure that you have gnuplot installed on your Linux box. 
+If not use:
+
+<pre>
+sudo apt-get install gnuplot
+</pre>
+
+to install.
+
+
