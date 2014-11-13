@@ -33,7 +33,7 @@ Run eagle using:
 for search RAWs with size 11 that are absent from the human genome and present in
 a specific genomic sequence (SEQ).
 
-### Run 99 Ebola virus using human as reference
+### Run EAGLE on 99 Ebola virus using human as reference
 
 For a current outbreak example run:
 
