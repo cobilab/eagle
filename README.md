@@ -1,7 +1,6 @@
 #EAGLE#
 
-![ScreenShot](/logo.png)
-Format: ![EAGLE ON GITHUB](https://github.com/pratas/eagle)
+![EAGLE](/logo.png)
 
 Search for **relative absent words (RAW)** in genomic sequences using a reference sequence.
 Currently, eagle runs on command line linux environment, building an image with patterns reporting the absent words regions as well as reporting the associated positions into a file.
