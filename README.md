@@ -91,7 +91,7 @@ DOI: doi-to-appear
 
 ## ISSUES ##
 
-For any issue let us know at [issues link](https://github.com/eagle/smash/issues).
+For any issue let us know at [issues link](https://github.com/pratas/eagle/issues).
 
 ## LICENSE ##
 
