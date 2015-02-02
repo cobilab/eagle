@@ -6,7 +6,7 @@ alt="EAGLE" width="350" height="100" border="0" /></p>
 <br>
 
 Search for **relative absent words (RAW)** in genomic sequences using a reference sequence.
-Currently, eagle runs on command line linux environment, building an image with patterns reporting the absent words regions as well as reporting the associated positions into a file.
+Currently, EAGLE runs on command line linux environment, building an image with patterns reporting the absent words regions as well as reporting the associated positions into a file.
 
 ## INSTALLATION ##
 
@@ -27,16 +27,16 @@ cope with specific needs, such as 3D visualization on Gnuplot.
 
 ### Run EAGLE
 
-Run eagle using:
+Run EAGLE using:
 
 <pre>
-./eagle -v -c 11 -i -r HG -t SEQ
+./EAGLE -v -c 11 -i -r HG -t SEQ
 </pre>
 
 for search RAWs with size 11 that are absent from the human genome and present in
 a specific genomic sequence (SEQ).
 
-### Run EAGLE on 99 Ebola virus using human as reference
+### Run EAGLE on 157 Ebola virus using human as reference
 
 For a current outbreak example run:
 
@@ -61,16 +61,16 @@ The output will be a 3D interactive plot, such as the following example:
 
 To see the possible options type
 <pre>
-./eagle
+./EAGLE
 </pre>
 or
 <pre>
-./eagle -h
+./EAGLE -h
 </pre>
 These will print the following options:
 <pre>
 <p>
-Usage: Eagle &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
+Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
 
   -v                       verbose mode             
   -c  &#60ctx&#62                context size model       

@@ -9,14 +9,14 @@ CFLAGS = -O3 -Wall $(CPLP) -DPROGRESS -DPOSITIONS #-DSTREAM
 #-----------------------------------------------------------------------------
 LIBS   = -lm
 DEPS   = defs.h
-PROGS  = $(BIN)/eagle $(BIN)/mink $(BIN)/rebat $(BIN)/projector
+PROGS  = $(BIN)/EAGLE $(BIN)/mink $(BIN)/rebat $(BIN)/projector
 OBJS   = mem.o common.o context.o paint.o
 #-----------------------------------------------------------------------------
 all:
 	$(MAKE) progs
 progs: $(PROGS)
-$(BIN)/eagle: eagle.c $(DEPS) $(OBJS)
-	$(CC) $(CFLAGS) -o $(BIN)/eagle eagle.c $(OBJS) $(LIBS)
+$(BIN)/EAGLE: eagle.c $(DEPS) $(OBJS)
+	$(CC) $(CFLAGS) -o $(BIN)/EAGLE eagle.c $(OBJS) $(LIBS)
 
 $(BIN)/mink: mink.c $(DEPS)
 	$(CC) $(CFLAGS) -o $(BIN)/mink mink.c $(LIBS)
