@@ -24,27 +24,28 @@ FILE *Fopen(const char *p, const char *m){
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#define MAX 	105
-#define LENGTH 	19000
-
 int main(int argc, char *argv[]){
   FILE *IN  = NULL;
   FILE *OUT = NULL;
-  unsigned x, y, strain, pos, order, **matrix;
-
-  if(argc < 2) {
-    printf("Usage: rebat <FILE>\n");
+  unsigned x, y, strain, pos, order, **matrix, nSeqs, length, maxk;
+  
+  if(argc < 4) {
+    printf("Usage: rebat <nSeqs> <length> <maxk> <FILE>\n");
     return 1;
     }
 
   printf("Starting rebat ...\n");
-  IN  = Fopen(argv[argc-1], "r");
-  OUT = Fopen("out", "w");
-  matrix = (unsigned **) malloc(MAX * sizeof(unsigned *));
-  for(x = 1 ; x < MAX ; ++x){
-    matrix[x] = (unsigned *) malloc(LENGTH * sizeof(unsigned));
-    for(y = 1 ; y < LENGTH ; ++y)
-      matrix[x][y] = 15;
+  IN     = Fopen(argv[argc-1], "r");
+  OUT    = Fopen("out", "w");
+  length = atoi(argv[argc-3]);
+  maxk   = atoi(argv[argc-2]) + 1;
+  nSeqs  = atoi(argv[argc-4]) + 1;
+
+  matrix = (unsigned **) malloc(nSeqs * sizeof(unsigned *));
+  for(x = 1 ; x < nSeqs ; ++x){
+    matrix[x] = (unsigned *) malloc(length * sizeof(unsigned));
+    for(y = 1 ; y < length ; ++y)
+      matrix[x][y] = maxk;
     }
 
   while(fscanf(IN, "%u\t%u\t%u\n", &strain, &pos, &order) == 3){
@@ -53,9 +54,9 @@ int main(int argc, char *argv[]){
     }
 
   fprintf(OUT, "# X	Y	Z\n");
-  for(x = 1 ; x < MAX ; ++x)
-    for(y = 1 ; y < LENGTH ; ++y)
-      if(matrix[x][y] != 15)
+  for(x = 1 ; x < nSeqs ; ++x)
+    for(y = 1 ; y < length ; ++y)
+      if(matrix[x][y] != maxk)
         fprintf(OUT, "%u\t%u\t%u\n", y, x, matrix[x][y]);
 
   printf("Done!\n");

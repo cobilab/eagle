@@ -42,6 +42,10 @@ uint32_t garbage;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// EAGLE VALUES:
+#define VERSION                1
+#define RELEASE                1
+
 // SYSTEM VALUES:
 #define BUFFER_SIZE            262144      
 #define PROGRESS_MIN           1000000

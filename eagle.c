@@ -301,7 +301,7 @@ int32_t main(int argc, char *argv[])
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
     fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "Usage: Eagle <OPTIONS>... -r [FILE]  [FILE]:<...>   \n");
+    fprintf(stderr, "Usage: eagle <OPTIONS>... -r [FILE]  [FILE]:<...>   \n");
     fprintf(stderr, "                                                    \n");
     fprintf(stderr, "  -v                       verbose mode             \n");
     fprintf(stderr, "  -c  <ctx>                context size model       \n");
@@ -317,7 +317,8 @@ int32_t main(int argc, char *argv[])
     return EXIT_SUCCESS;
     }
 
-  fprintf(stderr, "===============> Eagle v1.0 <=============\n");
+  fprintf(stderr, "===============> Eagle v%u.%u <=============\n", VERSION, 
+  RELEASE);
   
   P->model        = (ModelPar *) Calloc(1, sizeof(ModelPar));
   P->verbose      = ArgsState  (DEFAULT_VERBOSE  , p, argc, "-v" );
