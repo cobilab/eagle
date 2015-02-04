@@ -3,13 +3,13 @@
 #============================================================================#
 BIN    = .
 CC     = gcc
-CPLP   = -fstrict-aliasing -ffast-math -msse2 -g
+CPLP   = -fstrict-aliasing -ffast-math -msse2
 #-----------------------------------------------------------------------------
 CFLAGS = -O3 -Wall $(CPLP) -DPROGRESS 
 #-----------------------------------------------------------------------------
 LIBS   = -lm -lpthread
 DEPS   = defs.h
-PROGS  = $(BIN)/EAGLE $(BIN)/mink $(BIN)/rebat $(BIN)/projector
+PROGS  = $(BIN)/EAGLE $(BIN)/mink $(BIN)/rebat
 OBJS   = mem.o common.o context.o
 #-----------------------------------------------------------------------------
 all:
@@ -21,8 +21,6 @@ $(BIN)/mink: mink.c $(DEPS)
 	$(CC) $(CFLAGS) -o $(BIN)/mink mink.c $(LIBS)
 $(BIN)/rebat: rebat.c $(DEPS)
 	$(CC) $(CFLAGS) -o $(BIN)/rebat rebat.c $(LIBS)
-$(BIN)/projector: projector.c $(DEPS)
-	$(CC) $(CFLAGS) -o $(BIN)/projector projector.c $(LIBS)
 mem.o: mem.c mem.h $(DEPS)
 	$(CC) -c $(CFLAGS) mem.c
 common.o: common.c common.h $(DEPS)
