@@ -74,8 +74,8 @@ Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
   -a                       about EAGLE,            
   -t                       use multi-threading,            
   -i                       use inversions,           
-  -min &#60k-mer&#62                k-mer minimum size,           
-  -max &#60k-mer&#62                k-mer maximum size,              
+  -min &#60k-mer&#62             k-mer minimum size,           
+  -max &#60k-mer&#62             k-mer maximum size,              
                                                     
   -r  [rFile]              reference file (database),
                                                     
