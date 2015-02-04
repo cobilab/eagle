@@ -36,13 +36,14 @@ for search RAWs with size 11 to 14 that are absent from SEQ1 and present in a sp
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
-For a current outbreak example, simply run:
+For a current outbreak example, simply run (it already includes the installation process):
 
 <pre>
+wget https://github.com/pratas/eagle/blob/master/RunAll.sh
 . RunAll.sh
 </pre>
 
-It will download, filter and find RAWs with an output 3D plot.
+It will install, download, filter and find RAWs, outputing a 3D plot.
 Nevertheless, make sure that you have gnuplot installed on your Linux box. 
 If not use:
 
