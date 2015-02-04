@@ -194,7 +194,8 @@ int32_t main(int argc, char *argv[]){
   uint32_t n, k, min, max, nKmers, nThreads = 0;
   Param    *P;
 
-  if(ArgsState(DEFAULT_HELP, p, argc, "-h") == 1 || argc < 2){
+  if(ArgsState(DEFAULT_HELP, p, argc, "-h") == 1 || argc < 3 || 
+     ArgsState(DEFAULT_HELP, p, argc, "?") == 1){
     fprintf(stderr, "Usage: EAGLE <OPTIONS>... -r [FILE]  [FILE]:<...>    \n");
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, "  -v                       verbose mode,             \n");
