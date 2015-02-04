@@ -29,10 +29,10 @@ cope with specific needs, such as 3D visualization on Gnuplot.
 Run EAGLE using:
 
 <pre>
-./EAGLE -v -min 11 -max 14 -i -r HG -t SEQ
+./EAGLE -v -min 11 -max 14 -i -r SEQ1 SEQ2
 </pre>
 
-for search RAWs with size 11 to 14 that are absent from the human genome and present in a specific genomic sequence (SEQ).
+for search RAWs with size 11 to 14 that are absent from SEQ1 and present in a specific genomic sequence (SEQ2).
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
