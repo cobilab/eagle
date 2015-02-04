@@ -84,8 +84,8 @@ Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
 
 ### Options meaning
 
-| Parameter flags     | Meaning                                                                              |
-|---------------------|:-------------------------------------------------------------------------------------|
+| Parameters          | Meaning                                                     |
+|---------------------|:------------------------------------------------------------|
 | -h                  | It will print the parameters menu (help menu)                                        |
 | -v                  | It will print progress information such as number of MAWs, etc.    |
 | -a                  | It will print the EAGLE version number, license type and authors.                    |
