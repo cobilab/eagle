@@ -78,9 +78,12 @@ Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
   -min &#60k-mer&#62             k-mer minimum size,           
   -max &#60k-mer&#62             k-mer maximum size,              
                                                     
-  -r  [rFile]              reference file (database),
+  -r  [rFile]              reference file (db),
                                                     
   [tFile1]:&#60tFile2&#62:&#60...&#62  target file(s).</p>         
+
+EAGLE is a fast method/tool to compute relative MAWs.
+The input files should be FASTA (.fa) or SEQ [ACGTN].
 </pre>
 
 ### Options meaning

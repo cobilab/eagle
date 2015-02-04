@@ -56,24 +56,20 @@ uint64_t FopenBytesInFile(const char *fn)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t DNASymToNum(uint8_t symbol)
-  {
-  switch(symbol)
-    {
-    case 'A': return 0;
-    case 'T': return 3;
-    case 'C': return 1;
-    case 'G': return 2;
-    default : return 4;
+uint8_t S2N(uint8_t c){
+  switch(c){
+    case 'A': case 'a':                     return 0;
+    case 'T': case 't': case 'U': case 'u': return 3;
+    case 'C': case 'c':                     return 1;
+    case 'G': case 'g':                     return 2;
+    default :                               return 4;
     }
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t NumToDNASym(uint8_t symbol)
-  {
-  switch(symbol)
-    {
+uint8_t N2S(uint8_t c){
+  switch(c){
     case 0: return 'A';
     case 3: return 'T';
     case 1: return 'C';

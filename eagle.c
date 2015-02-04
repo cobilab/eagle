@@ -16,7 +16,7 @@ void RWord(FILE *F, uint8_t *b, int32_t i, uint32_t ctx){
   uint8_t w[ctx+1], n;
   i -= ctx;
   for(n = 0 ; n < ctx ; ++n)
-    w[n] = NumToDNASym(b[i+n]);
+    w[n] = N2S(b[i+n]);
   w[ctx] = '\0';
   fprintf(F, "%s\n", w);
   }
@@ -30,7 +30,7 @@ void Target(Param P, uint8_t id){
   char     *name2  = concatenate(P.tar[id], name1);
   FILE     *Pos    = Fopen(name2, "w");
   uint64_t nSymbols = NDNASyminFile(Reader), i = 0, raw = 0, unknown = 0;
-  uint32_t n, k, idxPos, hIndex;
+  uint32_t n, k, idxPos, hIndex, header = 0;
   int32_t  idx = 0;
   uint8_t  *wBuf, *rBuf, *sBuf, sym, found = 0;
 
@@ -48,7 +48,12 @@ void Target(Param P, uint8_t id){
       CalcProgress(nSymbols, i);
       #endif
       ++i;
-      if((sym = DNASymToNum(rBuf[idxPos])) == 4){
+      switch(rBuf[idxPos]){
+        case '>':  header = 1; continue;
+        case '\n': header = 0; continue;  
+        default:   if(header==1) continue;
+        }
+      if((sym = S2N(rBuf[idxPos])) == 4){
         ++unknown;
         continue;
         }
@@ -109,7 +114,7 @@ void Target(Param P, uint8_t id){
 // - - - - - - - - - - - - - - - - R E F E R E N C E - - - - - - - - - - - - -
 void LoadReference(Param P){
   FILE     *Reader = Fopen(P.ref, "r");
-  uint32_t k, idxPos;
+  uint32_t k, idxPos, header = 0;
   int32_t  idx = 0;
   uint8_t  *rBuf, *sBuf, sym;
   #ifdef PROGRESS
@@ -138,8 +143,12 @@ void LoadReference(Param P){
       else if(P.nThreads == P.id+1) 
         CalcProgress(size, i);
       #endif
-      if((sym = DNASymToNum(rBuf[idxPos])) == 4) 
-        continue;
+      switch(rBuf[idxPos]){
+        case '>':  header = 1; continue;
+        case '\n': header = 0; continue;  
+        default:   if(header==1) continue;
+        }
+      if((sym = S2N(rBuf[idxPos])) == 4) continue;    
       sBuf[idx] = sym;
       GetIdx(sBuf+idx-1, P.M);
       if(i > P.M->ctx){ // SKIP INITIAL CONTEXT, ALL "AAA..."
@@ -186,7 +195,6 @@ int32_t main(int argc, char *argv[]){
   Param    *P;
 
   if(ArgsState(DEFAULT_HELP, p, argc, "-h") == 1 || argc < 2){
-    fprintf(stderr, "                                                     \n");
     fprintf(stderr, "Usage: EAGLE <OPTIONS>... -r [FILE]  [FILE]:<...>    \n");
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, "  -v                       verbose mode,             \n");
@@ -196,19 +204,22 @@ int32_t main(int argc, char *argv[]){
     fprintf(stderr, "  -min <k-mer>             k-mer minimum size,       \n");
     fprintf(stderr, "  -max <k-mer>             k-mer maximum size,       \n");
     fprintf(stderr, "                                                     \n");
-    fprintf(stderr, "  -r [rFile]               reference file (database),\n");
+    fprintf(stderr, "  -r [rFile]               reference file (db),      \n");
     fprintf(stderr, "                                                     \n");
-    fprintf(stderr, "  [tFile1]:<tFile2>:<...>  target file(s).         \n\n");
+    fprintf(stderr, "  [tFile1]:<tFile2>:<...>  target file(s).           \n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, "EAGLE is a fast method/tool to compute relative MAWs.\n");
+    fprintf(stderr, "The input files should be FASTA (.fa) or SEQ [ACGTN].\n");
     return EXIT_SUCCESS;
     }
 
-  if(ArgsState(0, p, argc, "-a")){
+  if(ArgsState(0, p, argc, "-a") || ArgsState(0, p, argc, "-V")){
     fprintf(stderr, "EAGLE %u.%u\n"
     "Copyright (C) 2015 University of Aveiro.\nThis is Free software. \nYou "
     "may redistribute copies of it under the terms of the GNU General \n"
     "Public License v2 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
     "WARRANTY, to the extent permitted by law.\nCode written by Diogo Pratas"
-    " and Armando J. Pinho.\n", RELEASE, VERSION);
+    " (pratas@ua.pt) and Armando J. Pinho (ap@ua.pt).\n", RELEASE, VERSION);
     return EXIT_SUCCESS;
     }
 
