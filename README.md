@@ -5,8 +5,7 @@
 alt="EAGLE" width="350" height="100" border="0" /></p>
 <br>
 
-Search for **relative absent words (RAW)** in genomic sequences using a reference sequence.
-Currently, EAGLE runs on command line linux environment, building an image with patterns reporting the absent words regions as well as reporting the associated positions into a file.
+Search for **relative absent words (RAW)** in genomic sequences using a reference sequence. Currently, EAGLE runs on command line linux environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE ca run in a multi-threading mode to minimize computation times.
 
 ## INSTALLATION ##
 
@@ -30,15 +29,14 @@ cope with specific needs, such as 3D visualization on Gnuplot.
 Run EAGLE using:
 
 <pre>
-./EAGLE -v -c 11 -i -r HG -t SEQ
+./EAGLE -v -min 11 -max 14 -i -r HG -t SEQ
 </pre>
 
-for search RAWs with size 11 that are absent from the human genome and present in
-a specific genomic sequence (SEQ).
+for search RAWs with size 11 to 14 that are absent from the human genome and present in a specific genomic sequence (SEQ).
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
-For a current outbreak example run:
+For a current outbreak example, simply run:
 
 <pre>
 . RunAll.sh
@@ -72,25 +70,23 @@ These will print the following options:
 <p>
 Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
 
-  -v                       verbose mode             
-  -c  &#60ctx&#62                context size model       
-  -i                       use inversions           
-  -ea &#60pts&#62                enlarge absent           
-  -en &#60pts&#62                enlarge N's              
-  -s  &#60sub&#62                sub-sample               
-  -o  &#60oFile&#62              output map file          
+  -v                       verbose mode,            
+  -a                       about EAGLE,            
+  -t                       use multi-threading,            
+  -i                       use inversions,           
+  -min &#60k-mer&#62                k-mer minimum size,           
+  -max &#60k-mer&#62                k-mer maximum size,              
                                                     
-  -r  [rFile]              reference file (database)
+  -r  [rFile]              reference file (database),
                                                     
-  [tFile1]:&#60tFile2&#62:&#60...&#62  target file(s)</p>         
+  [tFile1]:&#60tFile2&#62:&#60...&#62  target file(s).</p>         
 </pre>
 
 ## CITATION ##
 
 On using this software/method please cite:
 
-Paper currently submitted.
-DOI: doi-to-appear
+Raquel M. Silva, Diogo Pratas, Luisa Castro, Armando J. Pinho, Paulo J. S. G. Ferreira (2014). Three minimal sequences found in Ebola virus genomes and absent from human DNA (Submitted).
 
 ## ISSUES ##
 
