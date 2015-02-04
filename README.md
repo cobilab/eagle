@@ -80,10 +80,10 @@ Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
                                                     
   -r  [rFile]              reference file (db),
                                                     
-  [tFile1]:&#60tFile2&#62:&#60...&#62  target file(s).</p>         
+  [tFile1]:&#60tFile2&#62:&#60...&#62  target file(s).         
 
 EAGLE is a fast method/tool to compute relative MAWs.
-The input files should be FASTA (.fa) or SEQ [ACGTN].
+The input files should be FASTA (.fa) or SEQ [ACGTN].</p>
 </pre>
 
 ### Options meaning
