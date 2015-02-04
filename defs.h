@@ -15,30 +15,49 @@ typedef int32_t  I32;
 typedef int16_t  I16;
 typedef int8_t   I8;
 
-typedef struct
-  {
-  uint32_t ctx;
-  uint32_t ir;
-  }
-ModelPar;
+typedef U8  ACCounter;                  // Size of context counters for arrays
+typedef U16 ENTMAX;                      // Entry size (nKeys for each hIndex)
+typedef U32 KEYSMAX;                                        // keys index bits
 
-typedef struct
-  {
-  uint8_t  help;
+typedef struct{
+  ENTMAX    *entrySize;                        // Number of keys in this entry
+  KEYSMAX   **keys;                        // The keys of the hash table lists
+  }
+Hash;
+
+typedef struct{
+  ACCounter *counters;
+  }
+Array;
+
+typedef struct{
+  U32       ctx;                          // Current depth of context template
+  U64       nPModels;                  // Maximum number of probability models
+  U64       multiplier;
+  U64       idx;
+  U64       idxIR;
+  U8        ir;
+  Array     array;
+  Hash      hash;
+  U8        mode;
+  }
+CModel;
+
+typedef struct{
   uint8_t  verbose;
-  ModelPar *model;
   char     *ref;
   char     *output;
   char     **tar;
   uint8_t  nTar;
-  uint32_t pt;
-  uint32_t ptN;
-  int32_t  sub;
+  uint8_t  id;
+  uint32_t nKmers;
+  uint32_t nThreads;
+  uint32_t context;
+  uint32_t inverse;
   uint64_t *size;
+  CModel   *M;
   }
-Parameters;
-
-uint32_t garbage;
+Param;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -52,18 +71,11 @@ uint32_t garbage;
 #define DEFAULT_HELP           0
 #define DEFAULT_VERBOSE        0
 #define DEFAULT_IR             0
-#define DEFAULT_CTX            13
+#define DEFAULT_CTX            12
+#define DEF_MIN_CTX            12
+#define DEF_MAX_CTX            13
 #define BGUARD                 32
-#define DEFAULT_MAX_COUNT      ((1 << (sizeof(ACCounter) * 8)) - 1)
-#define MX_PMODEL              65535
 #define ALPHABET_SIZE          4
-#define MATCH_SYMBOL           48 //88
-#define UNIQUE_SYMBOL          49 //45
-#define N_SYMBOL               78 //'N'
-#define NO_MATCH_REGION        0             
-#define MATCHED_REGION         1               
-#define DEFAULT_SUBSAMPLE      -1
-#define DEFAULT_SAMPLE_RATIO   50000 // 10000
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -10,53 +10,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-float *logTable;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-uint32_t FLog2(uint64_t i)
-  {
-  uint32_t n, m, k = 32, o = (i & (i - 1)) ? 1 : 0;
-  static const uint64_t sizes[6] = 
-  { 0x0000000000000002ull, 0x000000000000000Cull, 0x00000000000000F0ull, 
-    0x000000000000FF00ull, 0x00000000FFFF0000ull, 0xFFFFFFFF00000000ull };
-
-  for(n = 6 ; n-- ; )
-    {
-    o += (m = (i & *(sizes+n)) ? k : 0);
-    i >>= m;
-    k >>= 1;
-    }
-
-  return o;
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//        Pow function from http://martin.ankerl.com/2007/10/04/
-//        optimized-pow-approximation-for-java-and-c-c/
-
-double Power(double a, double b)
-  {
-  int tmp = (*(1 + (int *)&a));
-  int tmp2 = (int)(b * (tmp - 1072632447) + 1072632447);
-  double p = 0.0;
-  *(1 + (int * )&p) = tmp2;
-  return p;
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-uint64_t NBytesInFile(FILE *file)
-  {
-  uint64_t size = 0;
-  fseek(file, 0, SEEK_END);
-  if((size = ftell(file)) < 1000)
-    {
-    fprintf(stderr, "Error: input file is very small!\n");
-    exit(1);
-    }
-  rewind(file);
-  return size;
+uint64_t NBytesInFile(FILE *F){
+  uint64_t s = 0;
+  fseek(F, 0, SEEK_END);
+  s = ftell(F);
+  rewind(F);
+  return s;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,24 +52,6 @@ uint64_t FopenBytesInFile(const char *fn)
   fclose(file);
 
   return size;
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void FillLogTable(uint32_t nSym, uint32_t alphaDen, uint32_t maxCHigh)
-  {
-  uint32_t n, maxSize = nSym * maxCHigh * alphaDen;
- 
-  logTable = (float *) Malloc(maxSize * sizeof(float));
-  for(n = 1 ; n != maxSize ; ++n)
-    logTable[n] = FLog2(n);
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-double SearchLog(uint32_t idx)
-  {
-  return logTable[idx];
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,20 +209,25 @@ char *RepString(const char *str, const char *old, const char *new)
   return cout;
   }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-uint32_t ArgsNumber(uint32_t def, char *arg[], uint32_t n, char *str)
-  {
-  for( ; --n ; )
-    if(!strcmp(str, arg[n]))
-      return atol(arg[n+1]);
-  return def;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// READ NUMBER FROM ARGS & CHECK BOUNDS
+//
+uint32_t ArgsNum(uint32_t d, char *a[], uint32_t n, char *s, uint32_t l,
+uint32_t u){
+  uint32_t x;
+  for( ; --n ; ) if(!strcmp(s, a[n])){
+    if((x = atol(a[n+1])) < l || x > u){
+      fprintf(stderr, "[x] Invalid number! Interval: [%u;%u].\n", l, u);
+      exit(EXIT_FAILURE);
+      }
+    return x;
+    }
+  return d;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-double ArgsDouble(double def, char *arg[], uint32_t n, char *str)
-  {
+double ArgsDouble(double def, char *arg[], uint32_t n, char *str){
   for( ; --n ; )
     if(!strcmp(str, arg[n]))
       return atof(arg[n+1]);
@@ -290,8 +236,7 @@ double ArgsDouble(double def, char *arg[], uint32_t n, char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t ArgsState(uint8_t def, char *arg[], uint32_t n, char *str)
-  {     
+uint8_t ArgsState(uint8_t def, char *arg[], uint32_t n, char *str){     
   for( ; --n ; )
     if(!strcmp(str, arg[n]))
       return def == 0 ? 1 : 0;
@@ -300,8 +245,7 @@ uint8_t ArgsState(uint8_t def, char *arg[], uint32_t n, char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *ArgsString(char *def, char *arg[], uint32_t n, char *str)
-  {
+char *ArgsString(char *def, char *arg[], uint32_t n, char *str){
   for( ; --n ; )
     if(!strcmp(str, arg[n]))
       return arg[n+1];
@@ -310,23 +254,18 @@ char *ArgsString(char *def, char *arg[], uint32_t n, char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *ArgsFiles(char *arg[], uint32_t argc, char *str)
-  {
+char *ArgsFiles(char *arg[], uint32_t argc, char *str){
   int32_t n = argc;
-
   for( ; --n ; )
     if(!strcmp(str, arg[n]))
       return CloneString(arg[n+1]);
-  
   return concatenate(concatenate(arg[argc-2], arg[argc-1]), ".svg");
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void FAccessWPerm(char *fn)
-  {
-  if(access(fn, F_OK) != -1)
-    {
+void FAccessWPerm(char *fn){
+  if(access(fn, F_OK) != -1){
     fprintf(stderr, "Error: file %s already exists!\n", fn);
     if(access(fn, W_OK) != -1)
       fprintf(stderr, "Note: file %s has write permission.\nTip: to force "
@@ -338,8 +277,7 @@ void FAccessWPerm(char *fn)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void TestReadFile(char *fn)
-  {
+void TestReadFile(char *fn){
   FILE *f = NULL;
   f = Fopen(fn, "r");
   fclose(f);
@@ -347,10 +285,8 @@ void TestReadFile(char *fn)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint32_t ReadFNames(Parameters *P, char *arg)
-  {
+uint32_t ReadFNames(Param *P, char *arg){
   uint32_t nFiles = 1, k = 0, argLen;
-  
   argLen = strlen(arg);
   for( ; k != argLen ; ++k)
     if(arg[k] == ':')
@@ -358,51 +294,24 @@ uint32_t ReadFNames(Parameters *P, char *arg)
   P->tar = (char **) Malloc(nFiles * sizeof(char *));
   P->tar[0] = strtok(arg, ":");
   TestReadFile(P->tar[0]);
-  for(k = 1 ; k != nFiles ; ++k)
-    {
+  for(k = 1 ; k < nFiles ; ++k){
     P->tar[k] = strtok(NULL, ":");
     TestReadFile(P->tar[k]);
     }
-
   return nFiles;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void CalcProgress(uint64_t size, uint64_t i)
-  {
-  if(i % (size / 100) == 0 && size > PROGRESS_MIN)
+inline void CalcProgress(uint64_t size, uint64_t i){
+  if(size > PROGRESS_MIN && i % (size / 100) == 0)
     fprintf(stderr, "Progress:%3d %%\r", (uint8_t) (i / (size / 100)));
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*
-uint32_t CalcCkecksum(Parameters *P)
-  {
-  File *Reader = Fopen(P->ref, "r");
-  uint64_t checksum = 0;
-  uint8_t  *readerBuffer;
-  uint32_t idxPos, k;
 
-  readerBuffer  = (uint8_t  *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
-  while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
-    for(idxPos = 0 ; idxPos < k ; ++idxPos)
-      checksum += (uint8_t) DNASymToNum(readerBuffer[idxPos]); 
-  checksum %= CHECKSUMGF;
-
-  Free(readerBuffer);
-  fclose(Reader);
-
-  return (uint32_t) checksum;
-  }
-*/
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-uint8_t CmpCheckSum(uint32_t cs, uint32_t checksum)
-  {
-  if(checksum != cs)
-    { 
+uint8_t CmpCheckSum(uint32_t cs, uint32_t checksum){
+  if(checksum != cs){ 
     fprintf(stderr, "Error: invalid reference file!\n"
     "Compression reference checksum ................. %u\n"
     "Decompression reference checksum ............... %u\n",
@@ -413,21 +322,22 @@ uint8_t CmpCheckSum(uint32_t cs, uint32_t checksum)
   return 0;
   }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void PrintArgs(Parameters *P)
-  {
+void PrintArgs(Param *P){
   uint32_t n;
-  fprintf(stderr, "Context model:\n");
-  fprintf(stderr, "  [+] order ........................ %u\n", P->model[0].ctx);
-  fprintf(stderr, "  [+] Inverted repeats ............. %s\n", P->model[0].ir == 
-  0 ? "no" : "yes");
-
-  fprintf(stderr, "Reference filename ................. %s\n", P->ref);
-  fprintf(stderr, "Target files (%u):\n", P->nTar);
-  for(n = 0 ; n < P->nTar ; ++n)
-    fprintf(stderr, "  [+] Filename %-2u .................. %s\n", n + 1, 
-    P->tar[n]);
+  fprintf(stdout, "K-mer models:\n");
+  for(n = 0 ; n < P[0].nKmers ; ++n){
+    fprintf(stdout, "  [+] K-mer model .................. %u\n", n+1);
+    fprintf(stdout, "    [-] K-mer ...................... %u\n", P[n].context);
+    fprintf(stdout, "    [-] Use inversions ............. %s\n", !P[n].inverse? 
+    "no" : "yes");
+    }
+  fprintf(stdout, "Reference filename ................. %s\n", P[0].ref);
+  fprintf(stdout, "Target files (%u):\n", P[0].nTar);
+  for(n = 0 ; n < P[0].nTar ; ++n)
+    fprintf(stdout, "  [-] Filename %-2u .................. %s\n", n+1, 
+    P[0].tar[n]);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

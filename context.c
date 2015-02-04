@@ -10,140 +10,140 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static void InitHashTable(CModel *cModel)
-  {
+static void InitHashTable(CModel *cModel){
   cModel->hash.keys      = (KEYSMAX **) Calloc(HASH_SIZE, sizeof(KEYSMAX *));
   cModel->hash.entrySize = (ENTMAX   *) Calloc(HASH_SIZE, sizeof(ENTMAX   ));
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static void InitArray(CModel *cModel)
-  {
+static void InitArray(CModel *cModel){
   cModel->array.counters = (ACCounter *) Calloc(cModel->nPModels, 
   sizeof(ACCounter));
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-CModel *CreateCModel(U32 ctx, U32 ir) 
-  {
-  CModel *cModel;
+void DeleteCModel(CModel *M){
+  uint32_t k;
+  if(M->mode == HASH_TABLE_MODE){
+    for(k = 0 ; k < HASH_SIZE ; ++k)
+      if(M->hash.entrySize[k] != 0)
+        Free(M->hash.keys[k]);
+    Free(M->hash.keys);
+    Free(M->hash.entrySize);
+    }
+  else // TABLE_MODE
+    Free(M->array.counters);
+  Free(M);
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CModel *CreateCModel(U32 ctx, U32 ir){
+  CModel *M;
   U64    prod = 1, *multipliers;
   U32    n;
 
-  cModel = (CModel *) Calloc(1, sizeof(CModel));
+  M = (CModel *) Calloc(1, sizeof(CModel));
 
-  if(ctx > MAX_HASH_CTX)
-    {
+  if(ctx > MAX_HASH_CTX){
     fprintf(stderr, "Error: context is greater than %d!\n", MAX_HASH_CTX);
     exit(1);
     }
   
-  multipliers       = (U64*) Calloc(ctx, sizeof(U64));
-  cModel->nPModels  = (U64) pow(ALPHABET_SIZE, ctx);
-  cModel->ctx       = ctx;
-  cModel->idx       = 0;
-  cModel->idxIR     = cModel->nPModels - 1;
-  cModel->ir        = ir  == 0 ? 0 : 1;
+  multipliers  = (U64*) Calloc(ctx, sizeof(U64));
+  M->nPModels  = (U64) pow(ALPHABET_SIZE, ctx);
+  M->ctx       = ctx;
+  M->idx       = 0;
+  M->idxIR     = M->nPModels - 1;
+  M->ir        = ir  == 0 ? 0 : 1;
 
-  if(ctx >= HASH_TABLE_BEGIN_CTX)
-    {
-    cModel->mode = HASH_TABLE_MODE;
-    InitHashTable(cModel);
+  if(ctx >= HASH_TABLE_BEGIN_CTX){
+    M->mode = HASH_TABLE_MODE;
+    InitHashTable(M);
     }
-  else
-    {
-    cModel->mode = ARRAY_MODE;
-    InitArray(cModel);
+  else{
+    M->mode = ARRAY_MODE;
+    InitArray(M);
     }
   
-  for(n = 0 ; n != cModel->ctx ; ++n)
-    {
+  for(n = 0 ; n < M->ctx ; ++n){
     multipliers[n] = prod;
     prod <<= 2;
     }
 
-  cModel->multiplier = multipliers[cModel->ctx-1];
+  M->multiplier = multipliers[M->ctx-1];
 
-  return cModel;
+  Free(multipliers);
+  return M;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void ResetIdx(CModel *cModel)
-  {
-  cModel->idx   = 0;
-  cModel->idxIR = cModel->nPModels - 1;
+void ResetIdx(CModel *M){
+  M->idx   = 0;
+  M->idxIR = M->nPModels - 1;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetIdxIR(U8 *p, CModel *M)
-  {
+inline void GetIdxIR(U8 *p, CModel *M){
   M->idxIR = (M->idxIR >> 2) + GetCompNum(*p) * M->multiplier;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetIdx(U8 *p, CModel *M)
-  {
+inline void GetIdx(U8 *p, CModel *M){
   M->idx = ((M->idx - *(p - M->ctx) * M->multiplier) << 2) + *p;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static void InsertKey(Hash *hash, U32 hIndex, U64 key)
-  {
-  hash->keys[hIndex] = (KEYSMAX *) Realloc(hash->keys[hIndex],
-  (hash->entrySize[hIndex] + 1) * sizeof(KEYSMAX), sizeof(KEYSMAX));
-
-  hash->keys[hIndex][hash->entrySize[hIndex]] = (U32) (key / HASH_SIZE);
-  hash->entrySize[hIndex]++;
+static void InsertKey(Hash *hash, U32 h, U64 key){
+  hash->keys[h] = (KEYSMAX *) Realloc(hash->keys[h], (hash->entrySize[h] + 1) 
+  * sizeof(KEYSMAX), sizeof(KEYSMAX));
+  hash->keys[h][hash->entrySize[h]] = (U32) (key / HASH_SIZE);
+  hash->entrySize[h]++;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void UpdateIR(CModel *cModel)
-  {
+void UpdateIR(CModel *M){
   U32 n;
-  U64 idx = cModel->idxIR;
+  U64 idx = M->idxIR;
 
-  if(cModel->mode == HASH_TABLE_MODE)
-    {
-    U32 hIndex = idx % HASH_SIZE;                            // The hash index
-    for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
-      if(((U64) cModel->hash.keys[hIndex][n] * HASH_SIZE) + hIndex == idx) 
+  if(M->mode == HASH_TABLE_MODE){
+    U32 h = idx % HASH_SIZE;                                 // The hash index
+    for(n = 0 ; n < M->hash.entrySize[h] ; n++)
+      if(((U64) M->hash.keys[h][n] * HASH_SIZE) + h == idx) 
         return;
-    InsertKey(&cModel->hash, hIndex, idx);                 // If key not found
+    InsertKey(&M->hash, h, idx);                           // If key not found
     }
   else
-    cModel->array.counters[idx] = 1;
+    M->array.counters[idx] = 1;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Update(CModel *cModel)
-  {
+void Update(CModel *M){
   U32 n;
-  U64 idx = cModel->idx;
+  U64 idx = M->idx;
 
-  if(cModel->mode == HASH_TABLE_MODE)
-    {
-    U32 hIndex = idx % HASH_SIZE;                            // The hash index
-    for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
-      if(((U64) cModel->hash.keys[hIndex][n] * HASH_SIZE) + hIndex == idx) 
+  if(M->mode == HASH_TABLE_MODE){
+    U32 h = idx % HASH_SIZE;                                 // The hash index
+    for(n = 0 ; n < M->hash.entrySize[h] ; n++)
+      if(((U64) M->hash.keys[h][n] * HASH_SIZE) + h == idx) 
         return;
-    InsertKey(&cModel->hash, hIndex, idx);                 // If key not found
+    InsertKey(&M->hash, h, idx);                           // If key not found
     }
   else
-    cModel->array.counters[idx] = 1;
+    M->array.counters[idx] = 1;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void NEntries(CModel *cModel)
-  {
+void NEntries(CModel *cModel){
   U32 max = 0, k = 0;
   for( ; k < HASH_SIZE ; ++k)
     if(max < cModel->hash.entrySize[k])

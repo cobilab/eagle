@@ -27,6 +27,7 @@ FILE *Fopen(const char *p, const char *m){
 int main(int argc, char *argv[]){
   FILE *IN;
   FILE *OUT = NULL;
+  char tmp[65535];
   unsigned x;
 
   if(argc < 4) {
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]){
   IN  = Fopen(argv[argc-1], "r");
   OUT = Fopen(Cat(argv[argc-1], ".mink"), "w");
     
-  while(fscanf(IN, "%u\n", &x) == 1)
+  while(fscanf(IN, "%u\t%s\n", &x, tmp) == 2)
       fprintf(OUT, "%u\t%u\t%u\n", atoi(argv[argc-3]), x, atoi(argv[argc-2])); 
 
   fclose(IN);

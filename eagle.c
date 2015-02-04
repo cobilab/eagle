@@ -4,372 +4,290 @@
 #include <math.h>
 #include <float.h>
 #include <ctype.h>
+#include <pthread.h>
 #include "mem.h"
 #include "defs.h"
 #include "common.h"
 #include "context.h"
-#include "paint.h"
-
-//TODO: USE DEFAULT ENLARGE = SUSAMPLE
-//TODO: hide N's from plot
 
 //////////////////////////////////////////////////////////////////////////////
-// - - - - - - - - - - - - - - - - - S U B S A M P L E - - - - - - - - - - - -
-
-void SetSubsample(Parameters *P, uint64_t max)
-  {
-  if(P->sub != -1)
-    return;  
-
-  if(max < DEFAULT_SAMPLE_RATIO)
-    { 
-    P->sub = 1;
-    return;
-    }
-
-  P->sub = max / DEFAULT_SAMPLE_RATIO;
+// - - - - - - - - - - - - - - - - W R I T E   W O R D - - - - - - - - - - - -
+void RWord(FILE *F, uint8_t *b, int32_t i, uint32_t ctx){
+  uint8_t w[ctx+1], n;
+  i -= ctx;
+  for(n = 0 ; n < ctx ; ++n)
+    w[n] = NumToDNASym(b[i+n]);
+  w[ctx] = '\0';
+  fprintf(F, "%s\n", w);
   }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - - - T A R G E T - - - - - - - - - - - - - - -
+void Target(Param P, uint8_t id){
+  FILE     *Reader = Fopen(P.tar[id], "r");
+  char     *name1  = (char *) Calloc(1024, sizeof(char));
+                     sprintf(name1, "-k%u.eg", P.context);
+  char     *name2  = concatenate(P.tar[id], name1);
+  FILE     *Pos    = Fopen(name2, "w");
+  uint64_t nSymbols = NDNASyminFile(Reader), i = 0, raw = 0, unknown = 0;
+  uint32_t n, k, idxPos, hIndex;
+  int32_t  idx = 0;
+  uint8_t  *wBuf, *rBuf, *sBuf, sym, found = 0;
 
-void Target(Parameters *P, CModel *cModel, uint8_t id, Painter *Paint, FILE 
-*Plot)
-  {
-  FILE        *Reader  = Fopen(P->tar[id], "r");
-  #ifdef STREAM
-  char        *name1   = concatenate(P->tar[id], ".str");
-  FILE        *Writter = Fopen(name1, "w");
-  #endif
-  #ifdef POSITIONS
-  char        *name2     = concatenate(P->tar[id], ".pos");
-  FILE        *Positions = Fopen(name2, "w");
-  #endif
-  uint64_t    nSymbols = NDNASyminFile(Reader), i = 0, init, repeated = 0,
-              unknown = 0;
-  uint32_t    n, k, idxPos, hIndex;
-  int32_t     idx = 0;
-  uint8_t     *writterBuffer, *readerBuffer, *symbolBuffer, sym, region, 
-              found;
-
-  if(P->verbose)
+  if(P.verbose)
     fprintf(stderr, "Searching target sequence %d ...\n", id + 1);
 
-  if(id != 0)
-    Paint->cx += DEFAULT_WIDTH + DEFAULT_SPACE;
+  wBuf  = (uint8_t *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
+  rBuf  = (uint8_t *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
+  sBuf  = (uint8_t *) Calloc(BUFFER_SIZE + BGUARD, sizeof(uint8_t));
+  sBuf += BGUARD;
 
-  writterBuffer = (uint8_t  *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
-  readerBuffer  = (uint8_t  *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
-  symbolBuffer  = (uint8_t  *) Calloc(BUFFER_SIZE + BGUARD, sizeof(uint8_t));
-  symbolBuffer += BGUARD;
-
-  init   = 0;
-  region = NO_MATCH_REGION;
-  while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
-    {
-    for(idxPos = 0 ; idxPos < k ; ++idxPos)
-      {
-      sym = DNASymToNum(readerBuffer[idxPos]);
-      if(sym == 4) 
-        {
-        if(i % P->sub == 0)
-          Rect(Plot, Paint->width, GetPoint(1+P->ptN), Paint->cx,
-          Paint->cy + GetPoint(i+1), GetRgbColor(LEVEL_HUE_N));
-
-        // TODO: Stop block or erase them from positions file
-
-        #ifdef STREAM
-        writterBuffer[idxPos] = N_SYMBOL;
-        #endif
-
-        ++i;
-        #ifdef PROGRESS
-        CalcProgress(nSymbols, i);
-        #endif
-        ++unknown;
-        continue;
-        }
-      symbolBuffer[idx] = sym;
-
-      GetIdx(symbolBuffer+idx-1, cModel);            
-
-      #ifdef STREAM
-      writterBuffer[idxPos] = UNIQUE_SYMBOL;
-      #endif
-      if(cModel->mode == 0)  // TABLE MODE
-        {
-        if(cModel->array.counters[cModel->idx] != 0)  // WORD FOUND
-          {
-          #ifdef STREAM
-          writterBuffer[idxPos] = MATCH_SYMBOL;
-          #endif
-          ++repeated;
-
-          if(i == 0)
-            region = MATCHED_REGION;
-
-          if(region == NO_MATCH_REGION)  // NO REGION FOUND
-            {
-            #ifdef POSITIONS
-            fprintf(Positions, "%"PRIu64":%"PRIu64"\n", init + 1, i);
-            #endif
-            region = MATCHED_REGION;
-            }
-          }
-        else  // NO WORD FOUND
-          {
-          if(i % P->sub == 0)
-            Rect(Plot, Paint->width, GetPoint(1+P->pt), Paint->cx,
-            Paint->cy + GetPoint(i+1), GetRgbColor(LEVEL_HUE));
-
-          #ifdef STREAM
-          writterBuffer[idxPos] = UNIQUE_SYMBOL; 
-          #endif
-          if(region == MATCHED_REGION)  // THERE WAS A REGION
-            {
-            region = NO_MATCH_REGION;
-            init   = i;
-            }
-          }
-        }
-      else  // HASH TABLE
-        {
-        found = 0;
-        hIndex = cModel->idx % HASH_SIZE;
-        for(n = 0 ; n < cModel->hash.entrySize[hIndex] ; n++)
-          if(((uint64_t) cModel->hash.keys[hIndex][n] * HASH_SIZE) + hIndex == 
-          cModel->idx)
-          //if(cModel->hash.keys[hIndex][n] == cModel->idx)
-            {
-            #ifdef STREAM
-            writterBuffer[idxPos] = MATCH_SYMBOL;
-            #endif
-            ++repeated;
-
-            if(i == 0)
-              region = MATCHED_REGION;
-
-            if(region == NO_MATCH_REGION)  // NO REGION FOUND
-              {
-              #ifdef POSITIONS
-              fprintf(Positions, "%"PRIu64":%"PRIu64"\n", init + 1, i);
-              #endif
-              region = MATCHED_REGION;
-              }
-
-            found = 1;
-            break;
-            }
-
-        if(found == 0) // NO WORD FOUND
-          {
-          if(i % P->sub == 0)
-            Rect(Plot, Paint->width, GetPoint(1+P->pt), Paint->cx,
-            Paint->cy + GetPoint(i+1), GetRgbColor(LEVEL_HUE));
-          #ifdef STREAM
-          writterBuffer[idxPos] = UNIQUE_SYMBOL;
-          #endif
-          if(region == MATCHED_REGION)  // THERE WAS A REGION
-            {
-            region = NO_MATCH_REGION;
-            init   = i;
-            }
-          }
-        }
-
-      if(++idx == BUFFER_SIZE)
-        {
-        memcpy(symbolBuffer - BGUARD, symbolBuffer + idx - BGUARD, BGUARD);
-        idx = 0;
-        }
-
-      ++i;
+  while((k = fread(rBuf, 1, BUFFER_SIZE, Reader))){
+    for(idxPos = 0 ; idxPos < k ; ++idxPos){
       #ifdef PROGRESS
       CalcProgress(nSymbols, i);
       #endif
+      ++i;
+      if((sym = DNASymToNum(rBuf[idxPos])) == 4){
+        ++unknown;
+        continue;
+        }
+      sBuf[idx] = sym;
+      GetIdx(sBuf+idx-1, P.M); 
+      if(i > P.M->ctx){  // SKIP INITIAL CONTEXT, ALL "AAA..."
+        if(P.M->mode == 0){ // TABLE MODE
+          if(!P.M->array.counters[P.M->idx]){ // NO MATCH!
+            fprintf(Pos, "%"PRIu64"\t", i-P.M->ctx);
+            RWord(Pos, sBuf, idx, P.M->ctx);
+            ++raw;
+            }
+          }
+        else{ // HASH TABLE
+          found = 0;
+          hIndex = P.M->idx % HASH_SIZE;
+          for(n = 0 ; n < P.M->hash.entrySize[hIndex] ; n++)
+            if(((uint64_t) P.M->hash.keys[hIndex][n]*HASH_SIZE)+hIndex == P.M->idx){
+              found = 1;
+              break;
+              }
+          if(found == 0){
+            fprintf(Pos, "%"PRIu64"\t", i-P.M->ctx); 
+            RWord(Pos, sBuf, idx, P.M->ctx);
+            ++raw;
+            }
+          }
+        }
+
+      if(++idx == BUFFER_SIZE){
+        memcpy(sBuf-BGUARD, sBuf+idx-BGUARD, BGUARD);
+        idx = 0;
+        }
       }
-    #ifdef STREAM
-    fprintf(Writter, "%s", writterBuffer);
-    fflush(Writter);
-    #endif
     }
 
-  #ifdef POSITIONS
-  if(region == NO_MATCH_REGION)
-    fprintf(Positions, "%"PRIu64":%"PRIu64"\n", init + 1, i);
-  #endif
-
-  #ifdef STREAM
-  fclose(Writter);
-  Free(name1);
-  #endif
-  #ifdef POSITIONS
-  fclose(Positions);
-  Free(name2);
-  #endif
-  Chromosome(Plot, Paint->width, GetPoint(P->size[id]), Paint->cx, Paint->cy);
-  ResetIdx(cModel);
-  Free(readerBuffer);
-  Free(writterBuffer);
-  Free(symbolBuffer-BGUARD);
+  fclose(Pos);
   fclose(Reader);
+  ResetIdx(P.M);
+  Free(name1);
+  Free(name2);
+  Free(rBuf);
+  Free(wBuf);
+  Free(sBuf-BGUARD);
 
-  fprintf(stderr, "Found: %"PRIu64" unknown symbols.\n", unknown);
-  fprintf(stderr, "Repeated: %.4lf %% (%"PRIu64" in %"PRIu64")\n", (double) 
-  repeated / (nSymbols-unknown) * 100.0, repeated, nSymbols-unknown);  
+  if(P.verbose == 1)
+    fprintf(stderr, "Done!                          \n");  // SPACES ARE VALID
 
-  if(P->verbose == 1)
-    fprintf(stderr, "Done!                          \n");  // SPACES ARE VALID 
+  fprintf(stdout, "RAWs FOUND  : %.4lf %% ( %"PRIu64" in %"PRIu64" )\n", 
+  (double) raw / (nSymbols-unknown) * 100.0, raw, nSymbols-unknown);  
+  fprintf(stdout, "Unknown sym : %"PRIu64"\n", unknown);
+  fprintf(stdout, "Total sym   : %"PRIu64"\n", nSymbols);
+  if(P.nTar != id+1)
+    fprintf(stdout, "------------------------------------------\n");
   }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - - R E F E R E N C E - - - - - - - - - - - - -
-
-CModel *LoadReference(Parameters *P)
-  {
-  FILE      *Reader = Fopen(P->ref, "r");
-  uint32_t  k, idxPos;
-  int32_t   idx = 0;
-  uint8_t   *readerBuffer, *symbolBuffer, sym;
-  CModel    *cModel;
+void LoadReference(Param P){
+  FILE     *Reader = Fopen(P.ref, "r");
+  uint32_t k, idxPos;
+  int32_t  idx = 0;
+  uint8_t  *rBuf, *sBuf, sym;
   #ifdef PROGRESS
-  uint64_t  i = 0, size = NBytesInFile(Reader);
+  uint64_t i = 0, size = NBytesInFile(Reader);
   #endif
 
-  if(P->verbose == 1)
-    fprintf(stderr, "Building reference model ...\n");
-
-  readerBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
-  symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + BGUARD+1, sizeof(uint8_t));
-  symbolBuffer += BGUARD;
-  cModel        = CreateCModel(P->model[0].ctx, P->model[0].ir);
-
-  while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
-    for(idxPos = 0 ; idxPos < k ; ++idxPos)
-      {
-      sym = DNASymToNum(readerBuffer[idxPos]);
-      if(sym == 4) continue;
-      symbolBuffer[idx] = sym;
-
-      GetIdx(symbolBuffer+idx-1, cModel);
-      Update(cModel);
-      if(cModel->ir == 1)                                  // Inverted repeats
-        {
-        GetIdxIR(symbolBuffer+idx, cModel);
-        UpdateIR(cModel);
-        }
-
-      if(++idx == BUFFER_SIZE)
-        {
-        memcpy(symbolBuffer - BGUARD, symbolBuffer + idx - BGUARD, BGUARD);
-        idx = 0;
-        }
-      #ifdef PROGRESS
-      CalcProgress(size, ++i);
-      #endif
+  if(P.verbose == 1){
+    if(P.nThreads == 0){
+      fprintf(stderr, "Building reference model (k=%u) ...\n", P.context);
       }
- 
-  ResetIdx(cModel);
-  Free(readerBuffer);
-  Free(symbolBuffer-BGUARD);
-  fclose(Reader);
-
-  if(P->verbose == 1)
-    {
-    if(cModel->mode == HASH_TABLE_MODE)
-      NEntries(cModel);
-    fprintf(stderr, "Done!                          \n");  // SPACES ARE VALID  
+    else if(P.nThreads == P.id+1){
+      fprintf(stderr, "Building reference models ...\n");
+      }
     }
 
-  return cModel;
+  rBuf  = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
+  sBuf  = (uint8_t *) Calloc(BUFFER_SIZE + BGUARD+1, sizeof(uint8_t));
+  sBuf += BGUARD;
+
+  while((k = fread(rBuf, 1, BUFFER_SIZE, Reader)))
+    for(idxPos = 0 ; idxPos < k ; ++idxPos){
+      ++i;
+      #ifdef PROGRESS
+      if(P.nThreads == 0)
+        CalcProgress(size, i);
+      else if(P.nThreads == P.id+1) 
+        CalcProgress(size, i);
+      #endif
+      if((sym = DNASymToNum(rBuf[idxPos])) == 4) 
+        continue;
+      sBuf[idx] = sym;
+      GetIdx(sBuf+idx-1, P.M);
+      if(i > P.M->ctx){ // SKIP INITIAL CONTEXT, ALL "AAA..."
+        Update(P.M);
+        if(P.M->ir == 1){  // Inverted repeats
+          GetIdxIR(sBuf+idx, P.M);
+          UpdateIR(P.M);
+          }
+        }
+      if(++idx == BUFFER_SIZE){
+        memcpy(sBuf-BGUARD, sBuf+idx-BGUARD, BGUARD);
+        idx = 0;
+        }
+      }
+ 
+  ResetIdx(P.M);
+  Free(rBuf);
+  Free(sBuf-BGUARD);
+  fclose(Reader);
+
+  if(P.verbose == 1){
+    if(P.nThreads == 0){
+      fprintf(stderr, "Done!                          \n");  // SPACES ARE VALID  
+      }
+    else if(P.nThreads == P.id+1){
+      fprintf(stderr, "Done!                          \n");  // SPACES ARE VALID  
+      }
+    }
   }
 
-  
+//////////////////////////////////////////////////////////////////////////////
+// - - - - - - - - - - - - - - T H R E A D I N G - - - - - - - - - - - - - - -
+void *LoadRefThread(void *Par){
+  Param *P = (Param *) Par;
+  LoadReference(P[0]);
+  pthread_exit(NULL);
+  }
+
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - E A G L E   M A I N - - - - - - - - - - - - - - -
+int32_t main(int argc, char *argv[]){
+  char     **p = *&argv;
+  uint32_t n, k, min, max, nKmers, nThreads = 0;
+  Param    *P;
 
-int32_t main(int argc, char *argv[])
-  {
-  char        **p = *&argv;
-  CModel      *refModels;
-  uint32_t    n;
-  Parameters  *P;
-
-  P = (Parameters *) Malloc(1 * sizeof(Parameters));
-  if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
-    {
-    fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "Usage: eagle <OPTIONS>... -r [FILE]  [FILE]:<...>   \n");
-    fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "  -v                       verbose mode             \n");
-    fprintf(stderr, "  -c  <ctx>                context size model       \n");
-    fprintf(stderr, "  -i                       use inversions           \n");
-    fprintf(stderr, "  -ea <pts>                enlarge absent           \n");
-    fprintf(stderr, "  -en <pts>                enlarge N's              \n");
-    fprintf(stderr, "  -s  <sub>                sub-sample               \n");
-    fprintf(stderr, "  -o  <oFile>              output map file          \n");
-    fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "  -r  [rFile]              reference file (database)\n");
-    fprintf(stderr, "                                                    \n");
-    fprintf(stderr, "  [tFile1]:<tFile2>:<...>  target file(s)         \n\n");
+  if(ArgsState(DEFAULT_HELP, p, argc, "-h") == 1 || argc < 2){
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, "Usage: EAGLE <OPTIONS>... -r [FILE]  [FILE]:<...>    \n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, "  -v                       verbose mode,             \n");
+    fprintf(stderr, "  -a                       about EAGLE,              \n");
+    fprintf(stderr, "  -t                       use multi-threading,      \n");
+    fprintf(stderr, "  -i                       use inversions,           \n");
+    fprintf(stderr, "  -min <k-mer>             k-mer minimum size,       \n");
+    fprintf(stderr, "  -max <k-mer>             k-mer maximum size,       \n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, "  -r [rFile]               reference file (database),\n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, "  [tFile1]:<tFile2>:<...>  target file(s).         \n\n");
     return EXIT_SUCCESS;
     }
 
-  fprintf(stderr, "===============> Eagle v%u.%u <=============\n", VERSION, 
-  RELEASE);
-  
-  P->model        = (ModelPar *) Calloc(1, sizeof(ModelPar));
-  P->verbose      = ArgsState  (DEFAULT_VERBOSE  , p, argc, "-v" );
-  P->model[0].ir  = ArgsState  (DEFAULT_IR       , p, argc, "-i" );
-  P->model[0].ctx = ArgsNumber (DEFAULT_CTX      , p, argc, "-c" );
-  P->pt           = ArgsNumber (0                , p, argc, "-ea");
-  P->ptN          = ArgsNumber (0                , p, argc, "-en");
-  P->sub          = ArgsNumber (DEFAULT_SUBSAMPLE, p, argc, "-s" );
-  P->ref          = ArgsString (NULL             , p, argc, "-r" );
-  P->output       = ArgsString ("plot"           , p, argc, "-o" );
-  P->nTar         = ReadFNames (P, argv[argc-1]);
-  if(P->verbose) 
-    {
+  if(ArgsState(0, p, argc, "-a")){
+    fprintf(stderr, "EAGLE %u.%u\n"
+    "Copyright (C) 2015 University of Aveiro.\nThis is Free software. \nYou "
+    "may redistribute copies of it under the terms of the GNU General \n"
+    "Public License v2 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
+    "WARRANTY, to the extent permitted by law.\nCode written by Diogo Pratas"
+    " and Armando J. Pinho.\n", RELEASE, VERSION);
+    return EXIT_SUCCESS;
+    }
+
+  min = ArgsNum (DEF_MIN_CTX, p, argc, "-min", MIN_HASH_CTX, MAX_HASH_CTX);
+  max = ArgsNum (DEF_MAX_CTX, p, argc, "-max", MIN_HASH_CTX, MAX_HASH_CTX);
+  if(min > max){
+    fprintf(stderr, "[x] Error: minimum (%u) is higher than maximum (%u)!\n",
+    min, max);
+    return EXIT_FAILURE;
+    } 
+  P = (Param *) Calloc((nKmers=max-min+1), sizeof(Param));
+  P[0].ref  = ArgsString (NULL, p, argc, "-r");
+  P[0].nTar = ReadFNames (P, argv[argc-1]);
+  if(ArgsState(0, p, argc, "-t"))
+    nThreads  = nKmers;
+  for(n = 0 ; n < nKmers ; ++n){
+    P[n].id       = n;
+    P[n].nKmers   = nKmers;
+    P[n].context  = min+n;
+    P[n].verbose  = ArgsState (DEFAULT_VERBOSE, p, argc, "-v");
+    P[n].inverse  = ArgsState (DEFAULT_IR, p, argc, "-i");
+    P[n].nThreads = nThreads;
+    if(n != 0){
+      P[n].nTar = P[0].nTar;
+      P[n].ref  = CloneString(P[0].ref);
+      P[n].tar  = (char **) Malloc(P[n].nTar * sizeof(char *));
+      for(k = 0 ; k < P[0].nTar ; ++k){
+        P[n].tar[k] = CloneString(P[0].tar[k]);
+        }
+      }
+    }
+
+  if(P[0].verbose){
+    fprintf(stdout, "===============> EAGLE v%u.%u <=============\n", 
+    VERSION, RELEASE);
     PrintArgs(P);
-    fprintf(stderr, "==========================================\n");
+    fprintf(stdout, "==========================================\n");
     }
 
-  refModels = LoadReference(P);
-
-  char     *name       = concatenate(P->output, ".svg");
-  FILE     *Plot       = Fopen(name, "w");
-  char     backColor[] = "#ffffff";
-  Painter  *Paint;
-  uint64_t max = 0;
-
-  P->size = (uint64_t *) Calloc(P->nTar, sizeof(uint64_t));
-  for(n = 0 ; n < P->nTar ; ++n)
-    {
-    FILE *Reader = Fopen(P->tar[n], "r");
-    P->size[n] = NDNASyminFile(Reader);
-    if(P->size[n] > max)
-      max = P->size[n];
-    fclose(Reader);
+  if(nThreads == 0){ // IF NO THREADS
+    for(k = 0 ; k < nKmers ; ++k){
+      P[k].M = CreateCModel(P[k].context, P[k].inverse); 
+      LoadReference(P[k]);
+      P[k].size = (uint64_t *) Calloc(P[k].nTar, sizeof(uint64_t));
+      for(n = 0 ; n < P[k].nTar ; ++n){
+        FILE *Reader = Fopen(P[k].tar[n], "r");
+        P[k].size[n] = NDNASyminFile(Reader);
+        fclose(Reader);
+        }
+      for(n = 0 ; n < P[0].nTar ; ++n)
+        Target(P[k], n);
+      DeleteCModel(P[k].M);
+      if(P[0].verbose)
+        fprintf(stdout, "==========================================\n");
+      }
     }
-
-  SetScale(max);
-  SetSubsample(P, max);
-  if(P->verbose == 1)
-    fprintf(stderr, "Subsample ratio: %u\n", P->sub);
-
-  Paint = CreatePainter(GetPoint(max), backColor);
-  PrintHead(Plot, (2 * DEFAULT_CX) + (((Paint->width + DEFAULT_SPACE) * 
-  P->nTar) - DEFAULT_SPACE), Paint->size + EXTRA);
-  Rect(Plot, (2 * DEFAULT_CX) + (((Paint->width + DEFAULT_SPACE) *
-  P->nTar) - DEFAULT_SPACE), Paint->size + EXTRA, 0, 0, backColor);
-
-  for(n = 0 ; n < P->nTar ; ++n)
-    Target(P, refModels, n, Paint, Plot);
-
-  PrintFinal(Plot);
-  Free(name); 
+  else{ // IF THREADS
+    fprintf(stderr, "Using multi-threading to load reference ...\n");
+    pthread_t t[nThreads];
+    for(k = 0 ; k < nKmers ; ++k)
+      P[k].M = CreateCModel(P[k].context, P[k].inverse); 
+    for(n = 0 ; n < nThreads ; ++n)
+      pthread_create(&(t[n+1]), NULL, LoadRefThread, (void *) &(P[n]));
+    for(n = 0 ; n < nThreads ; ++n) // DO NOT JOIN FORS!
+      pthread_join(t[n+1], NULL);
+    for(k = 0 ; k < nKmers ; ++k){
+      P[0].size = (uint64_t *) Calloc(P[0].nTar, sizeof(uint64_t));
+      for(n = 0 ; n < P[0].nTar ; ++n){
+        FILE *Reader = Fopen(P[0].tar[n], "r");
+        P[0].size[n] = NDNASyminFile(Reader);
+        fclose(Reader);
+        }
+      for(n = 0 ; n < P[0].nTar ; ++n)
+        Target(P[k], n);
+      DeleteCModel(P[k].M);
+      if(P[0].verbose)
+        fprintf(stdout, "==========================================\n");
+      }
+    }
 
   return EXIT_SUCCESS;
   }
