@@ -90,16 +90,16 @@ Usage: EAGLE &#60OPTIONS&#62 ... -r [FILE]  [FILE]:&#60...&#62
 | -v                  | It will print progress information such as number of MAWs, etc.    |
 | -a                  | It will print the EAGLE version number, license type and authors.                    |
 | -t                  | It will use multiple-threading. The number of threads will be equal to the maximum k-mer less the minimum k-mer. The time to accomplish the task will be much lower, although it will use more memory (memory from each model is cumulative).                   |
-| -i                  | Inverted words (reverse complemented) will also be considered |
-| -min &#60;k-mer&#62;   | Size of the minimum k-mer (word) (possible interval [1;28]). Contexts above 16 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. |
-| -max &#60;k-mer&#62;   | Size of the maximum k-mer (word) (possible interval [1;28]). Contexts above 16 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. |
-| -r [refFile]        | The reference filename. Sequence alphabet [A,C,G,T,N]. |
-| [tarFile]           | The target filename(s). For multiple separate by ":". Example: VIRUSA:VIRUSB:VIRUSC. Sequence alphabet [A,C,G,T,N]. |
+| -i                  | Inverted words (reverse complemented) will also be considered. |
+| -min &#60;k-mer&#62;   | Size of the minimum k-mer (word size). Possible interval [1;28]. Contexts above 16 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. |
+| -max &#60;k-mer&#62;   | Size of the maximum k-mer (word size). Possible interval [1;28]. Contexts above 16 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. |
+| -r [refFile]        | The reference filename. Accepted sequence alphabet [A,C,G,T,N]. |
+| [tarFile]           | The target filename(s). For multiple file usage separate by ":". Example: Virus1:Virus2:virus3. Accepted sequence alphabet [A,C,G,T,N]. |
 
 
 ## CITATION ##
 
-On using this software/method please cite:
+On using this software/method, please cite:
 
 Raquel M. Silva, Diogo Pratas, Luisa Castro, Armando J. Pinho, Paulo J. S. G. Ferreira (2014). Three minimal sequences found in Ebola virus genomes and absent from human DNA (Submitted).
 
