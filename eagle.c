@@ -117,8 +117,9 @@ void LoadReference(Param P){
   uint32_t k, idxPos, header = 0;
   int32_t  idx = 0;
   uint8_t  *rBuf, *sBuf, sym;
+  uint64_t i = 0;
   #ifdef PROGRESS
-  uint64_t i = 0, size = NBytesInFile(Reader);
+  uint64_t size = NBytesInFile(Reader);
   #endif
 
   if(P.verbose == 1){
