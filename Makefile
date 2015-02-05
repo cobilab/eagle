@@ -111,6 +111,32 @@ EAGLE/fast:
 	$(MAKE) -f CMakeFiles/EAGLE.dir/build.make CMakeFiles/EAGLE.dir/build
 .PHONY : EAGLE/fast
 
+#=============================================================================
+# Target rules for targets named mink
+
+# Build rule for target.
+mink: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mink
+.PHONY : mink
+
+# fast build rule for target.
+mink/fast:
+	$(MAKE) -f CMakeFiles/mink.dir/build.make CMakeFiles/mink.dir/build
+.PHONY : mink/fast
+
+#=============================================================================
+# Target rules for targets named rebat
+
+# Build rule for target.
+rebat: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rebat
+.PHONY : rebat
+
+# fast build rule for target.
+rebat/fast:
+	$(MAKE) -f CMakeFiles/rebat.dir/build.make CMakeFiles/rebat.dir/build
+.PHONY : rebat/fast
+
 common.o: common.c.o
 .PHONY : common.o
 
@@ -207,6 +233,54 @@ mem.c.s:
 	$(MAKE) -f CMakeFiles/EAGLE.dir/build.make CMakeFiles/EAGLE.dir/mem.c.s
 .PHONY : mem.c.s
 
+mink.o: mink.c.o
+.PHONY : mink.o
+
+# target to build an object file
+mink.c.o:
+	$(MAKE) -f CMakeFiles/mink.dir/build.make CMakeFiles/mink.dir/mink.c.o
+.PHONY : mink.c.o
+
+mink.i: mink.c.i
+.PHONY : mink.i
+
+# target to preprocess a source file
+mink.c.i:
+	$(MAKE) -f CMakeFiles/mink.dir/build.make CMakeFiles/mink.dir/mink.c.i
+.PHONY : mink.c.i
+
+mink.s: mink.c.s
+.PHONY : mink.s
+
+# target to generate assembly for a file
+mink.c.s:
+	$(MAKE) -f CMakeFiles/mink.dir/build.make CMakeFiles/mink.dir/mink.c.s
+.PHONY : mink.c.s
+
+rebat.o: rebat.c.o
+.PHONY : rebat.o
+
+# target to build an object file
+rebat.c.o:
+	$(MAKE) -f CMakeFiles/rebat.dir/build.make CMakeFiles/rebat.dir/rebat.c.o
+.PHONY : rebat.c.o
+
+rebat.i: rebat.c.i
+.PHONY : rebat.i
+
+# target to preprocess a source file
+rebat.c.i:
+	$(MAKE) -f CMakeFiles/rebat.dir/build.make CMakeFiles/rebat.dir/rebat.c.i
+.PHONY : rebat.c.i
+
+rebat.s: rebat.c.s
+.PHONY : rebat.s
+
+# target to generate assembly for a file
+rebat.c.s:
+	$(MAKE) -f CMakeFiles/rebat.dir/build.make CMakeFiles/rebat.dir/rebat.c.s
+.PHONY : rebat.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -215,6 +289,8 @@ help:
 	@echo "... depend"
 	@echo "... EAGLE"
 	@echo "... edit_cache"
+	@echo "... mink"
+	@echo "... rebat"
 	@echo "... rebuild_cache"
 	@echo "... common.o"
 	@echo "... common.i"
@@ -228,6 +304,12 @@ help:
 	@echo "... mem.o"
 	@echo "... mem.i"
 	@echo "... mem.s"
+	@echo "... mink.o"
+	@echo "... mink.i"
+	@echo "... mink.s"
+	@echo "... rebat.o"
+	@echo "... rebat.i"
+	@echo "... rebat.s"
 .PHONY : help
 
 

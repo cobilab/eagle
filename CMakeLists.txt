@@ -5,11 +5,13 @@ IF(UNIX)
  link_libraries(m)
 ENDIF(UNIX)
 
-project (SMASH) 
+project (EAGLE) 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 SET(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+add_executable (mink mink.c) 
+add_executable (rebat rebat.c) 
 add_executable (EAGLE eagle.c mem.c common.c context.c defs.h) 
 
 TARGET_LINK_LIBRARIES(EAGLE
