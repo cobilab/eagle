@@ -5,7 +5,7 @@
 alt="EAGLE" width="350" height="100" border="0" /></p>
 <br>
 
-Search for **relative absent words (RAW)** in genomic sequences using a reference sequence. Currently, EAGLE runs on command line linux environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE ca run in a multi-threading mode to minimize computation times.
+Search for **relative absent words (RAW)** in genomic sequences using a reference sequence. Currently, EAGLE runs on command line linux environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a multi-thread mode to minimize computation times.
 
 ## INSTALLATION ##
 
@@ -94,7 +94,7 @@ Run EAGLE using:
 ./EAGLE -v -t -min 9 -max 13 -i -r C18.fa ECOLI.fna
 </pre>
 
-It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. For "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) relative RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no MAWs, neverthless the running output in the console should indicate something as RAWs "FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
+It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. For "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) relative RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no MAWs, neverthless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
