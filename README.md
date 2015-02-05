@@ -5,7 +5,7 @@
 alt="EAGLE" width="350" height="100" border="0" /></p>
 <br>
 
-Search for **relative absent words (RAW)** in genomic sequences using a reference sequence. Currently, EAGLE runs on command line linux environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a multi-thread mode to minimize computation times.
+Search for **relative absent words (RAWs)** in genomic sequences using a reference sequence. Currently, EAGLE runs on a command line environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a **multi-thread mode** to minimize computation times.
 
 ## INSTALLATION ##
 
@@ -71,7 +71,7 @@ In windows use cygwin (https://www.cygwin.com/) and make sure that it is include
 
 ## EXECUTION
 
-As an example above it is shown an example where the objective is to find minimal absent words (MAWs) that appear in a E. coli and not in the assembled (GRC) human chromosome 18, for k-mer sizes between 9 and 13 (including inverted words), and therefore named RAWs.
+As an example, the objective is to find minimal absent words (RAWs) that appear in a E. coli and not in the assembled (GRC) human chromosome 18, for k-mer sizes between 9 and 13 (including inverted words).
 
 ### Get data
 
@@ -93,7 +93,7 @@ Run EAGLE using:
 ./EAGLE -v -t -min 9 -max 13 -i -r C18.fa ECOLI.fna
 </pre>
 
-It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. For "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no RAWs, neverthless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
+It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. The "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no RAWs, nevertheless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
 
 ### Run EAGLE on 158 Ebola virus using human as reference
 
@@ -109,14 +109,14 @@ For a current outbreak example (with Ebola virus), simply run the following scri
 EAGLE package comes with scripts and a few programs to compute RAWs for outbreaks.
 It will download sequences, pre-process and find RAWs with k belonging to the interval 11 to 14, outputing a 3D plot. 
 
-Nevertheless, make sure that you have gnuplot installed on your computer. 
+Make sure that you have gnuplot installed on your computer. 
 If not, in linux use:
 
 <pre>
 sudo apt-get install gnuplot
 </pre>
 
-For OSX use brew.
+For OSX use brew or any other. For any other plot manager usage, simply plot file data2.
 The output will be a 3D interactive plot, such as the following example:
 
 ![ScreenShot](/ebola.png)
