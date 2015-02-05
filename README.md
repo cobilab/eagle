@@ -97,7 +97,7 @@ It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". Th
 
 ### Run EAGLE on 158 Ebola virus using human as reference
 
-For a current outbreak example (with Ebola virus), simply run:
+For a current outbreak example (with Ebola virus), simply run the following scripts by the following order:
 
 <pre>
 . GetHuman.sh
@@ -107,14 +107,16 @@ For a current outbreak example (with Ebola virus), simply run:
 </pre>
 
 EAGLE package comes with scripts and a few programs to compute RAWs for outbreaks.
-It will filter and find RAWs, outputing a 3D plot.
-Nevertheless, make sure that you have gnuplot installed on your Linux box. 
-If not use:
+It will download sequences, pre-process and find RAWs with k belonging to the interval 11 to 14, outputing a 3D plot. 
+
+Nevertheless, make sure that you have gnuplot installed on your computer. 
+If not, in linux use:
 
 <pre>
 sudo apt-get install gnuplot
 </pre>
 
+For OSX use brew.
 The output will be a 3D interactive plot, such as the following example:
 
 ![ScreenShot](/ebola.png)
