@@ -72,15 +72,29 @@ In windows use cygwin (https://www.cygwin.com/) and make sure that it is include
 
 ## EXECUTION
 
+As an example above it is shown an example where the objective is to find minimal absent words (MAWs) that appear in a E. coli and not in the assembled (GRC) human chromosome 18, for k-mer sizes between 11 and 14 (including inverted words).
+
+### Get data
+
+EAGLE accepts fasta (http://en.wikipedia.org/wiki/FASTA_format) and seq (ACGTN characters) formats. Therefore, data might be downloaded using a graphical interface or by wget and after decompressed. Above we use wget:
+
+<pre>
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr18.fa.gz ;
+gunzip hs_ref_GRCh38_chr18.fa.gz ;
+mv hs_ref_GRCh38_chr18.fa C18.fa ;
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Bacteria/Escherichia_coli_K_12_substr__DH10B_uid58979/NC_010473.fna ;
+mv NC_010473.fna ECOLI.fna ;
+</pre>
+
 ### Run EAGLE
 
 Run EAGLE using:
 
 <pre>
-./EAGLE -v -min 11 -max 14 -i -r SEQ1 SEQ2
+./EAGLE -v -t -min 11 -max 14 -i -r C18.fa ECOLI.fna
 </pre>
 
-for search RAWs with size 11 to 14 that are absent from SEQ1 and present in a specific genomic sequence (SEQ2).
+It will create files with prefix "ECOLI.fna" followed by the suffix "-k11.eg". The number 11 stands for k = 11. For "-k12.eg" stands for k = 12 and so on. Each file contains the respective(s) relative RAWs for each k along with the respective positions (the content is ordered by positions). 
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
