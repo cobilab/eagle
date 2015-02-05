@@ -95,7 +95,7 @@ Run EAGLE using:
 
 It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. For "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no RAWs, neverthless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
 
-### Run EAGLE on 157 Ebola virus using human as reference
+### Run EAGLE on 158 Ebola virus using human as reference
 
 For a current outbreak example (with Ebola virus), simply run:
 
