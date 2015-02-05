@@ -10,7 +10,7 @@ Search for **relative absent words (RAW)** in genomic sequences using a referenc
 ## INSTALLATION ##
 
 Cmake is needed for installation (http://www.cmake.org/). You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
-In the following instructions we show the procedure to install, compile and create the relative MAWs:
+In the following instructions we show the procedure to install, compile and create the RAWs:
 
 ### STEP 1
 
@@ -71,7 +71,7 @@ In windows use cygwin (https://www.cygwin.com/) and make sure that it is include
 
 ## EXECUTION
 
-As an example above it is shown an example where the objective is to find minimal absent words (MAWs) that appear in a E. coli and not in the assembled (GRC) human chromosome 18, for k-mer sizes between 9 and 13 (including inverted words).
+As an example above it is shown an example where the objective is to find minimal absent words (MAWs) that appear in a E. coli and not in the assembled (GRC) human chromosome 18, for k-mer sizes between 9 and 13 (including inverted words), and therefore named RAWs.
 
 ### Get data
 
@@ -93,7 +93,7 @@ Run EAGLE using:
 ./EAGLE -v -t -min 9 -max 13 -i -r C18.fa ECOLI.fna
 </pre>
 
-It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. For "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) relative RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no MAWs, neverthless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
+It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. For "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no RAWs, neverthless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
