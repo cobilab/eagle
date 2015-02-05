@@ -100,11 +100,14 @@ It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". Th
 For a current outbreak example (with Ebola virus), simply run:
 
 <pre>
-
-. RunAll.sh
+. GetHuman.sh
+. GetEBOV.sh
+. RunOutbreak.sh
+. RunPlot.sh
 </pre>
 
-It will install, download, filter and find RAWs, outputing a 3D plot.
+EAGLE package comes with scripts and a few programs to compute RAWs for outbreaks.
+It will filter and find RAWs, outputing a 3D plot.
 Nevertheless, make sure that you have gnuplot installed on your Linux box. 
 If not use:
 
@@ -112,7 +115,6 @@ If not use:
 sudo apt-get install gnuplot
 </pre>
 
-to install.
 The output will be a 3D interactive plot, such as the following example:
 
 ![ScreenShot](/ebola.png)
