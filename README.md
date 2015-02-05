@@ -97,10 +97,10 @@ It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". Th
 
 ### Run EAGLE on 157 Ebola virus using human as reference
 
-For a current outbreak example, simply run (it already includes the installation process):
+For a current outbreak example (with Ebola virus), simply run:
 
 <pre>
-wget https://github.com/pratas/eagle/blob/master/RunAll.sh
+
 . RunAll.sh
 </pre>
 
