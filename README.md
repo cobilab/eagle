@@ -95,32 +95,6 @@ Run EAGLE using:
 
 It will create files with prefix "ECOLI.fna" followed by the suffix "-k9.eg". The number 9 stands for k = 9. The "-k10.eg" stands for k = 10 and so on. Each file contains the respective(s) RAWs for each k along with the respective positions (the content is ordered by positions). If a file is empty it means that there are no RAWs, nevertheless the running output in the console should indicate something as "RAWs FOUND : 0.0000 % ( 0 in 4753180 )" (for k=8).
 
-### Run EAGLE on 158 Ebola virus using human as reference
-
-For a current outbreak example (with Ebola virus), simply run the following scripts by the following order:
-
-<pre>
-. GetHuman.sh
-. GetEBOV.sh
-. RunOutbreak.sh
-. RunPlot.sh
-</pre>
-
-EAGLE package comes with scripts and a few programs to compute RAWs for outbreaks.
-It will download sequences, pre-process and find RAWs with k belonging to the interval 11 to 14, outputing a 3D plot. 
-
-Make sure that you have gnuplot installed on your computer. 
-If not, in linux use:
-
-<pre>
-sudo apt-get install gnuplot
-</pre>
-
-For OSX use brew or any other. For any other plot manager usage, simply plot file data2.
-The output will be a 3D interactive plot, such as the following example:
-
-![ScreenShot](/ebola.png)
-
 ## PARAMETERS
 
 To see the possible options type
