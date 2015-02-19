@@ -2,7 +2,7 @@
 # =============================================================================
 # BUILD 3D MAP
 echo 'set mapping cartesian
-set view 80,10,1,1 #0,0,1,1
+set view 360,0,1,1 #0,0,1,1
 set auto
 set zrange [14:11]
 set xrange [1:20000]   

@@ -10,6 +10,8 @@
 #include "common.h"
 #include "context.h"
 
+#define PROGRESS
+
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - - W R I T E   W O R D - - - - - - - - - - - -
 void RWord(FILE *F, uint8_t *b, int32_t i, uint32_t ctx){
@@ -195,7 +197,7 @@ int32_t main(int argc, char *argv[]){
   uint32_t n, k, min, max, nKmers, nThreads = 0;
   Param    *P;
 
-  if(ArgsState(DEFAULT_HELP, p, argc, "-h") == 1 || argc < 3 || 
+  if(ArgsState(DEFAULT_HELP, p, argc, "-h") == 1 || argc < 2 || 
      ArgsState(DEFAULT_HELP, p, argc, "?") == 1){
     fprintf(stderr, "Usage: EAGLE <OPTIONS>... -r [FILE]  [FILE]:<...>    \n");
     fprintf(stderr, "                                                     \n");
