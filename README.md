@@ -144,7 +144,8 @@ The input files should be FASTA (.fa) or SEQ [ACGTN].</p>
 
 On using this software/method, please cite:
 
-Raquel M. Silva, Diogo Pratas, Luisa Castro, Armando J. Pinho, Paulo J. S. G. Ferreira (2014). Three minimal sequences found in Ebola virus genomes and absent from human DNA (Submitted).
+Raquel M. Silva, Diogo Pratas, Luísa Castro, Armando J. Pinho & Paulo J. S. G. Ferreira. Bioinformatics (2015): btv189.
+DOI: [10.1093/bioinformatics/btv189] (http://doi.org/10.1093/bioinformatics/btv189).
 
 ## ISSUES ##
 
