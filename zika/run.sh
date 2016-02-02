@@ -14,11 +14,11 @@ cp goose/src/goose-* .
 cp goose/scripts/Get* .
 # GET EAGLE ===================================================================
 git clone https://github.com/pratas/eagle.git
-cd eagle/src/
+cd eagle/
 cmake .
 make
-cp EAGLE ../../
-cd ../../
+cp EAGLE ../
+cd ../
 fi
 ###############################################################################
 if [[ "$DOWNLOAD" -eq "1" ]]; then
@@ -33,4 +33,6 @@ ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/Zika_virus_uid36615/NC_012532.fna \
 -O ZIKA.fna
 cat ZIKA.fna | grep -v ">" | tr -d -c "ACGT" > ZIKA-GENOME;
 fi
+###############################################################################
+./EAGLE -v -t -min 11 -max 15 -r HS-GENOME ZIKA-GENOME
 #===============================================================================
