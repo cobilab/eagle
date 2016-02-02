@@ -11,6 +11,7 @@
 #include "context.h"
 
 #define PROGRESS
+#define PROFILE
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - - W R I T E   W O R D - - - - - - - - - - - -
@@ -44,6 +45,12 @@ void Target(Param P, uint8_t id){
   sBuf  = (uint8_t *) Calloc(BUFFER_SIZE + BGUARD, sizeof(uint8_t));
   sBuf += BGUARD;
 
+  #ifdef PROFILE
+  char *name3   = (char *) Calloc(1024, sizeof(char));
+                  sprintf(name3, "%s-k%u.prof", P.tar[id], P.context);
+  FILE *Profile = Fopen(name3, "w");
+  #endif
+
   while((k = fread(rBuf, 1, BUFFER_SIZE, Reader))){
     for(idxPos = 0 ; idxPos < k ; ++idxPos){
       #ifdef PROGRESS
@@ -66,8 +73,16 @@ void Target(Param P, uint8_t id){
           if(!P.M->array.counters[P.M->idx]){ // NO MATCH!
             fprintf(Pos, "%"PRIu64"\t", i-P.M->ctx);
             RWord(Pos, sBuf, idx, P.M->ctx);
+            #ifdef PROFILE
+            fprintf(Profile, "2\n");
+            #endif
             ++raw;
             }
+          #ifdef PROFILE
+          else { // THERE IS MATCH
+            fprintf(Profile, "0\n");
+            }
+          #endif
           }
         else{ // HASH TABLE
           found = 0;
@@ -80,8 +95,16 @@ void Target(Param P, uint8_t id){
           if(found == 0){
             fprintf(Pos, "%"PRIu64"\t", i-P.M->ctx); 
             RWord(Pos, sBuf, idx, P.M->ctx);
+            #ifdef PROFILE
+            fprintf(Profile, "2\n");
+            #endif
             ++raw;
             }
+          #ifdef PROFILE
+          else { // THERE IS MATCH
+            fprintf(Profile, "0\n");
+            }
+          #endif
           }
         }
 
@@ -97,6 +120,10 @@ void Target(Param P, uint8_t id){
   ResetIdx(P.M);
   Free(name1);
   Free(name2);
+  #ifdef PROFILE
+  fclose(Profile);
+  Free(name3);
+  #endif
   Free(rBuf);
   Free(wBuf);
   Free(sBuf-BGUARD);
