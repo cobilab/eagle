@@ -1,7 +1,11 @@
 #!/bin/bash
+###############################################################################
+# MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
+###############################################################################
 # PARAMETERS ==================================================================
 INSTALL=1;
 DOWNLOAD=1;
+EAGLE=1;
 ###############################################################################
 if [[ "$INSTALL" -eq "1" ]]; then
 rm -fr goose-* EAGLE goose/ eagle/ ;
@@ -34,5 +38,8 @@ ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/Zika_virus_uid36615/NC_012532.fna \
 cat ZIKA.fna | grep -v ">" | tr -d -c "ACGT" > ZIKA-GENOME;
 fi
 ###############################################################################
-./EAGLE -v -t -min 11 -max 15 -r HS-GENOME ZIKA-GENOME
+if [[ "$EAGLE" -eq "1" ]]; then
+./EAGLE -v -i -t -min 11 -max 15 -r HS-GENOME ZIKA-GENOME
+fi
+# cat ZIKA-GENOME-k12.eg
 #===============================================================================
