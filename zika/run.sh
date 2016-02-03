@@ -16,6 +16,7 @@ make
 cd ../../
 cp goose/src/goose-* .
 cp goose/scripts/Get* .
+cp goose/scripts/Down* .
 # GET EAGLE ===================================================================
 git clone https://github.com/pratas/eagle.git
 cd eagle/
@@ -27,13 +28,19 @@ fi
 ###############################################################################
 if [[ "$DOWNLOAD" -eq "1" ]]; then
 . GetHumanParse.sh
-rm -fr HS-GENOME;
+rm -fr HS-GENOME REPORT-SPLIT;
 for((x=1; x<28; ++x));
   do 
   cat HS$x | grep -v ">" | tr -d -c "ACGT" >> HS-GENOME;
   done
 perl DownloadZika.pl
-cat ZIKA.fna | grep -v ">" | tr -d -c "ACGT" > ZIKA-GENOME;
+(./goose-splitreads < zika.fa ) &> REPORT-SPLIT;
+NZIKAS=`cat REPORT-SPLIT | tail -n 1 | awk '{print $1;}'`;
+for((x=1; x<=$NZIKAS ; ++x));
+  do
+  #cat zika.fa | grep -v ">" | tr -d -c "ACGT" > ZIKA-GENOME;
+  echo "cat out$x.fa";
+  done
 fi
 ###############################################################################
 if [[ "$EAGLE" -eq "1" ]]; then
