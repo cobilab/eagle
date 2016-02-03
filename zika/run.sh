@@ -32,9 +32,7 @@ for((x=1; x<28; ++x));
   do 
   cat HS$x | grep -v ">" | tr -d -c "ACGT" >> HS-GENOME;
   done
-wget  --trust-server-names -q \
-ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/Zika_virus_uid36615/NC_012532.fna \
--O ZIKA.fna
+perl DownloadZika.pl
 cat ZIKA.fna | grep -v ">" | tr -d -c "ACGT" > ZIKA-GENOME;
 fi
 ###############################################################################
