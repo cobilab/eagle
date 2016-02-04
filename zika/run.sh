@@ -3,10 +3,10 @@
 # MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
 ###############################################################################
 # PARAMETERS ==================================================================
-INSTALL=0;
-DOWNLOAD=0; # 0
-PARSE=0;
-EAGLE=0;
+INSTALL=1;
+DOWNLOAD=1; # 0
+PARSE=1;
+EAGLE=1;
 PLOT=1;
 ###############################################################################
 if [[ "$INSTALL" -eq "1" ]]; then
