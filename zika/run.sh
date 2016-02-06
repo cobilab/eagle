@@ -3,9 +3,9 @@
 # MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
 ###############################################################################
 # PARAMETERS ==================================================================
-INSTALL=0;
-DOWNLOAD=0; # 0
-PARSE=0;
+INSTALL=1;
+DOWNLOAD=1; # 0
+PARSE=1;
 EAGLE=1;
 PLOT=1;
 ###############################################################################
@@ -43,14 +43,23 @@ for((x=1; x<28; ++x));
   done
 (./goose-splitreads < zika.fa ) &> REPORT-SPLIT;
 NZIKAS=`cat REPORT-SPLIT | tail -n 1 | awk '{print $1;}'`;
+y=1;
+for((x=1; x<=$NZIKAS ; ++x));
+  do
+  echo "Parsing & filtering $x ...";
+  cat out$x.fa | grep -v ">" | tr -d -c "ACGT" > TMP;
+  NSYMBOLS=`./goose-info TMP | grep "Number of symbols" | awk '{ print $4}'`;
+  if [[ "$NSYMBOLS" -ge "8000" ]]; then
+    mv TMP Z$y ;
+    ((++y));
+    fi
+  done
+NZIKAS=$((--y));
 ZNAMES="";
 for((x=1; x<$NZIKAS ; ++x));
   do
-  echo "Filtering $x ...";
-  cat out$x.fa | grep -v ">" | tr -d -c "ACGT" > Z$x;
   ZNAMES+="Z$x:"; 
   done
-cat out$NZIKAS.fa | grep -v ">" | tr -d -c "ACGT" > Z$NZIKAS;
 ZNAMES+="Z$NZIKAS";
 fi
 ###############################################################################
