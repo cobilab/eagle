@@ -3,9 +3,10 @@
 # MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
 ###############################################################################
 # PARAMETERS ==================================================================
-INSTALL=1;
-DOWNLOAD=1; # 0
-PARSE=1;
+INSTALL=0;
+DOWNLOAD=0; # 0
+PARSE=0;
+PROFILE=1;
 EAGLE=1;
 PLOT=1;
 ###############################################################################
@@ -28,6 +29,13 @@ cp EAGLE ../
 cp mink ../
 cp rebat ../
 cd ../
+# GET GECO ====================================================================
+git clone https://github.com/pratas/geco.git
+cd geco/src/
+cmake .
+make
+cp GeCo ../../
+cd ../../
 fi
 ###############################################################################
 if [[ "$DOWNLOAD" -eq "1" ]]; then
@@ -49,7 +57,7 @@ for((x=1; x<=$NZIKAS ; ++x));
   echo "Parsing & filtering $x ...";
   cat out$x.fa | grep -v ">" | tr -d -c "ACGT" > TMP;
   NSYMBOLS=`./goose-info TMP | grep "Number of symbols" | awk '{ print $4}'`;
-  if [[ "$NSYMBOLS" -ge "8000" ]]; then
+  if [[ "$NSYMBOLS" -ge "9000" ]]; then
     mv TMP Z$y ;
     ((++y));
     fi
@@ -61,6 +69,11 @@ for((x=1; x<$NZIKAS ; ++x));
   ZNAMES+="Z$x:"; 
   done
 ZNAMES+="Z$NZIKAS";
+fi
+###############################################################################
+if [[ "$PROFILE" -eq "1" ]]; then
+./GeCo -h
+
 fi
 ###############################################################################
 if [[ "$EAGLE" -eq "1" ]]; then
