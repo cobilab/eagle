@@ -5,7 +5,7 @@
 # PARAMETERS ==================================================================
 INSTALL=0;
 DOWNLOAD=0; # 0
-PARSE=0;
+PARSE=1;
 PROFILE=1;
 EAGLE=1;
 PLOT=1;
