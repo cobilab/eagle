@@ -1,7 +1,7 @@
 <p align="center"><img src="imgs/logo.png" 
 alt="EAGLE" width="400" height="100" border="0" /></p>
 
-<p align="justify">Search for **relative absent words (RAWs)** in genomic sequences using a reference sequence. Currently, EAGLE runs on a command line environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a **multi-thread mode** to minimize computation times.</p>
+<p align="justify">Search for <b>relative absent words (RAWs)</b> in genomic sequences using a reference sequence. Currently, EAGLE runs on a command line environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a <b>multi-thread mode</b> to minimize computation times.</p>
 
 ## INSTALLATION ##
 
