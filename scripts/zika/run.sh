@@ -3,8 +3,8 @@
 # MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
 ###############################################################################
 # PARAMETERS ==================================================================
-INSTALL=0;
-DOWNLOAD=0; # 0
+INSTALL=1;
+DOWNLOAD=1; # 0
 PARSE=1;
 PROFILE=1;
 EAGLE=1;
@@ -22,13 +22,13 @@ cp goose/scripts/Get* .
 cp goose/scripts/Down* .
 # GET EAGLE ===================================================================
 git clone https://github.com/pratas/eagle.git
-cd eagle/
+cd eagle/src/
 cmake .
 make
-cp EAGLE ../
-cp mink ../
-cp rebat ../
-cd ../
+cp EAGLE ../../
+cp mink ../../
+cp rebat ../../
+cd ../../
 # GET GECO ====================================================================
 git clone https://github.com/pratas/geco.git
 cd geco/src/
