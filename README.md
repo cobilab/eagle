@@ -1,7 +1,7 @@
 #EAGLE#
 
 <br>
-<p align="center"><img src="/logo.png" 
+<p align="center"><img src="imgs/logo.png" 
 alt="EAGLE" width="350" height="100" border="0" /></p>
 <br>
 
@@ -18,20 +18,16 @@ Download, install and resolve conflicts.
 
 #### Linux 
 <pre>
-sudo apt-get install cmake
-wget https://github.com/pratas/eagle/archive/master.zip
-unzip master.zip
-cd eagle-master
+#sudo apt-get install cmake
+git clone https://github.com/pratas/eagle.git
+cd eagle/src/
 cmake .
 make
 </pre>
-
 Alternatively, you can install (without cmake and only for linux) using
-
 <pre>
-wget https://github.com/pratas/eagle/archive/master.zip
-unzip master.zip
-cd eagle-master
+git clone https://github.com/pratas/eagle.git
+cd eagle/src/
 mv Makefile.linux Makefile
 make
 </pre>
@@ -48,7 +44,7 @@ brew install wget
 brew install gcc48
 wget https://github.com/pratas/eagle/archive/master.zip
 unzip master.zip
-cd eagle-master
+cd eagle-master/src/
 cmake .
 make
 </pre>
@@ -153,9 +149,9 @@ For any issue let us know at [issues link](https://github.com/pratas/eagle/issue
 
 ## LICENSE ##
 
-GPL v2.
+GPL v3.
 
 For more information:
-<pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
+<pre>http://www.gnu.org/licenses/gpl-3.0.html</pre>
 
 
