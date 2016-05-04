@@ -118,8 +118,9 @@ set ticslevel 0.0
 set view 71,84,1,1
 set angles degrees
 set parametric
-set zrange[16:11]
-set grid
+set zrange[16:12]
+set grid lc rgbcolor \"#BBBBBB\"
+set samples 2500
 unset key
 set zlabel 'K-mer'
 set ylabel 'Strain'
