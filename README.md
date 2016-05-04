@@ -1,16 +1,11 @@
-#EAGLE#
-
-<br>
 <p align="center"><img src="imgs/logo.png" 
-alt="EAGLE" width="350" height="100" border="0" /></p>
-<br>
+alt="EAGLE" width="400" height="100" border="0" /></p>
 
-Search for **relative absent words (RAWs)** in genomic sequences using a reference sequence. Currently, EAGLE runs on a command line environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a **multi-thread mode** to minimize computation times.
+<p align="justify">Search for **relative absent words (RAWs)** in genomic sequences using a reference sequence. Currently, EAGLE runs on a command line environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a **multi-thread mode** to minimize computation times.</p>
 
 ## INSTALLATION ##
 
-Cmake is needed for installation (http://www.cmake.org/). You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
-In the following instructions we show the procedure to install, compile and create the RAWs:
+<p align="justify">Cmake is needed for installation (http://www.cmake.org/). You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager. In the following instructions we show the procedure to install, compile and create the RAWs: </p>
 
 ### STEP 1
 
@@ -63,7 +58,7 @@ sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
 
 #### Windows
 
-In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, all steps will be the same as in Linux.
+<p align="justify">In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, all steps will be the same as in Linux.</p>
 
 ## EXECUTION
 
