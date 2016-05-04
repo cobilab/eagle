@@ -3,12 +3,13 @@
 # MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
 ###############################################################################
 # PARAMETERS ==================================================================
-INSTALL=1;
-DOWNLOAD=1; # 0
-PARSE=1;
-PROFILE=1;
-EAGLE=1;
-PLOT=1;
+INSTALL=0;
+DOWNLOAD=0; # 0
+PARSE=0;
+PROFILE=0;
+EAGLE=0;
+PLOT=0;
+PLOT2=1;
 ###############################################################################
 if [[ "$INSTALL" -eq "1" ]]; then
 rm -fr goose-* EAGLE goose/ eagle/ ;
@@ -78,7 +79,7 @@ fi
 ###############################################################################
 if [[ "$EAGLE" -eq "1" ]]; then
 mink="11";
-maxk="15";
+maxk="16";
 ./EAGLE -v -i -t -min $mink -max $maxk -r HS-GENOME $ZNAMES
 rm -f data2;
 for((x=$mink ; x<=$maxk ; ++x));
@@ -95,23 +96,37 @@ fi
 ###############################################################################
 # BUILD 3D MAP
 if [[ "$PLOT" -eq "1" ]]; then
-echo 'set mapping cartesian
+echo "set mapping cartesian
 set view 360,0,1,1 #0,0,1,1
 set auto
-set zrange [14:11]
+set zrange [14:$mink]
 set xrange [1:11000]   
 set ztics 1
 set isosamples 60
 set hidden3d
 unset key
-set palette defined (11 "red", 12 "brown", 13 "blue", 14 "grey")
-set zlabel "K-mer"
-set ylabel "Strain"
-set xlabel "Length"
-splot "data2" u 2:1:3 with points pt 1 palette' | gnuplot -persist
+set palette defined (11 'red', 12 'brown', 13 'blue', 14 'grey')
+set zlabel 'K-mer'
+set ylabel 'Strain'
+set xlabel 'Length'
+splot 'data2' u 2:1:3 with points pt 1 palette" | gnuplot -persist
+fi
+if [[ "$PLOT2" -eq "1" ]]; then
+cat data2 | sort -V | ./goose-newlineonnewx > data3
+echo "reset
+set ticslevel 0.0
+set view 71,84,1,1
+set angles degrees
+set parametric
+set zrange[16:11]
+set grid
+unset key
+set zlabel 'K-mer'
+set ylabel 'Strain'
+set xlabel 'Length'
+set pm3d depthorder 
+splot 'data3' u 1:2:3 with pm3d" | gnuplot -p
+#set mapping cylindrical
 fi
 # =============================================================================
-
-
-
 
