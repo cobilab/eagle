@@ -66,7 +66,7 @@ void Target(Param P, uint8_t id){
         continue;
         }
       sBuf[idx] = sym;
-      GetIdx(sBuf+idx-1, P.M); 
+      GetIdx(sBuf+idx, P.M); 
       if(i > P.M->ctx){  // SKIP INITIAL CONTEXT, ALL "AAA..."
         if(P.M->mode == 0){ // TABLE MODE
           if(!P.M->array.counters[P.M->idx]){ // NO MATCH!
@@ -179,7 +179,7 @@ void LoadReference(Param P){
         }
       if((sym = S2N(rBuf[idxPos])) == 4) continue;    
       sBuf[idx] = sym;
-      GetIdx(sBuf+idx-1, P.M);
+      GetIdx(sBuf+idx, P.M);
       if(i > P.M->ctx){ // SKIP INITIAL CONTEXT, ALL "AAA..."
         Update(P.M);
         if(P.M->ir == 1){  // Inverted repeats
