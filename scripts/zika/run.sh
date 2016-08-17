@@ -3,11 +3,11 @@
 # MINIMAL SEQUENCES FOUND IN ZIKA VIRUS GENOME AND ABSENT FROM HUMAN DNA (GRC)
 ###############################################################################
 # PARAMETERS ==================================================================
-INSTALL=0;
-DOWNLOAD=0; # 0
-PARSE=0;
-PROFILE=0;
-EAGLE=0;
+INSTALL=1;
+DOWNLOAD=1; # 0
+PARSE=1;
+PROFILE=1;
+EAGLE=1;
 PLOT=0;
 PLOT2=1;
 ###############################################################################
