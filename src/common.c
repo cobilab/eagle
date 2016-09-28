@@ -299,7 +299,7 @@ uint32_t ReadFNames(Param *P, char *arg){
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void CalcProgress(uint64_t size, uint64_t i){
+void CalcProgress(uint64_t size, uint64_t i){
   if(size > PROGRESS_MIN && i % (size / 100) == 0)
     fprintf(stderr, "Progress:%3d %%\r", (uint8_t) (i / (size / 100)));
   }

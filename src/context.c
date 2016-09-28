@@ -88,13 +88,13 @@ void ResetIdx(CModel *M){
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetIdxIR(U8 *p, CModel *M){
+void GetIdxIR(U8 *p, CModel *M){
   M->idxIR = (M->idxIR >> 2) + GetCompNum(*p) * M->multiplier;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetIdx(U8 *p, CModel *M){
+void GetIdx(U8 *p, CModel *M){
   M->idx = ((M->idx - *(p - M->ctx) * M->multiplier) << 2) + *p;
   }
 
