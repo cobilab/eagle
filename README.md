@@ -1,5 +1,8 @@
-<p align="center"><img src="imgs/logo.png" 
-alt="EAGLE" width="400" height="100" border="0" /></p>
+<a href="https://zenodo.org/badge/latestdoi/19451188"><img src="https://zenodo.org/badge/19451188.svg" alt="DOI"></a>
+[![Build Status](https://travis-ci.org/pratas/eagle.svg?branch=master)](https://travis-ci.org/pratas/eagle)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+
+<p align="center"><img src="imgs/logo.png" alt="EAGLE" height="80" border="0" /></p>
 
 <p align="justify">Search for <b>relative absent words (RAWs)</b> in genomic sequences using a reference sequence. Currently, EAGLE runs on a command line environment. It reports into files the absent words, in a k-mer range size, as well as the associated positions. EAGLE can run in a <b>multi-thread mode</b> to minimize computation times.</p>
 
