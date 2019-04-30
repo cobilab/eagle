@@ -1,5 +1,5 @@
 <a href="https://zenodo.org/badge/latestdoi/19451188"><img src="https://zenodo.org/badge/19451188.svg" alt="DOI"></a>
-[![Build Status](https://travis-ci.org/pratas/eagle.svg?branch=master)](https://travis-ci.org/pratas/eagle)
+[![Build Status](https://travis-ci.org/cobilab/eagle.svg?branch=master)](https://travis-ci.org/cobilab/eagle)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 <p align="left"><img src="imgs/logo.png" alt="EAGLE" height="90" border="0" /></p>
