@@ -116,7 +116,7 @@ Version 2.1:
 
 version 1.0:
  * R. M. Silva, D. Pratas, L. Castro, A. J. Pinho & P. J. S. G. Ferreira. Bioinformatics (2015): btv189.
-[DOI] (http://doi.org/10.1093/bioinformatics/btv189).
+[URL](http://doi.org/10.1093/bioinformatics/btv189).
 
 ### Issues ###
 
