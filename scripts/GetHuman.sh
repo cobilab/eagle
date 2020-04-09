@@ -1,5 +1,8 @@
 #!/bin/bash
 #rm -f GCF_000001405.39_GRCh38.p13_genomic.fna.gz
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Homo_sapiens/current/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz 
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/reference/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz
 gunzip GCF_000001405.39_GRCh38.p13_genomic.fna.gz
-mv GCF_000001405.39_GRCh38.p13_genomic.fna HS.fna
+mv GCF_000001405.39_GRCh38.p13_genomic.fna.gz HS.fna
+#ftp://ftp.ncbi.nlm.nih.gov/genomes/Homo_sapiens/current/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz 
+#gunzip GCF_000001405.39_GRCh38.p13_genomic.fna.gz
+#mv GCF_000001405.39_GRCh38.p13_genomic.fna HS.fna
