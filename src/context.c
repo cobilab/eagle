@@ -143,11 +143,11 @@ void Update(CModel *M){
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void NEntries(CModel *cModel){
+void NEntries(CModel *M){
   U32 max = 0, k = 0;
   for( ; k < HASH_SIZE ; ++k)
-    if(max < cModel->hash.entrySize[k])
-      max = cModel->hash.entrySize[k];
+    if(max < M->hash.entrySize[k])
+      max = M->hash.entrySize[k];
   fprintf(stderr, "Maximum hash entry size: %u\n", max);       
   }
 

@@ -11,9 +11,7 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 SET(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 SET(CMAKE_BUILD_TYPE Release)
 
-add_executable (mink mink.c) 
-add_executable (rebat rebat.c) 
-add_executable (EAGLE eagle.c mem.c common.c context.c defs.h) 
+add_executable (EAGLE eagle.c mem.c msg.c dist.c stats.c filter.c common.c context.c defs.h) 
 
 TARGET_LINK_LIBRARIES(EAGLE
 pthread

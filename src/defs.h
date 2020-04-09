@@ -6,6 +6,14 @@
 #include <inttypes.h>
 #include <unistd.h>
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// RUNNING COMPILATION PROPERTIES :: COMMENT OR UNCOMMENT 
+
+#define PROGRESS // DISPLAY % OF PROGRESS
+#define PROFILE  // DISPLAY A PROFILE WITH EXISTS OR NOT
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 typedef uint64_t U64;
 typedef uint32_t U32;
 typedef uint16_t U16;
@@ -40,44 +48,55 @@ typedef struct{
   Array     array;
   Hash      hash;
   U8        mode;
+  U32       id;
   }
 CModel;
 
 typedef struct{
-  uint8_t  verbose;
-  char     *ref;
-  char     *output;
-  char     **tar;
-  uint8_t  nTar;
-  uint8_t  id;
-  uint32_t nKmers;
-  uint32_t nThreads;
-  uint32_t context;
-  uint32_t inverse;
-  uint64_t *size;
-  CModel   *M;
+  CModel    **M;
+  uint32_t  nModels;
+  }
+CModels;
+
+typedef struct{
+  uint8_t   verbose;
+  uint8_t   force;
+  uint8_t   plots;
+  uint8_t   stdout;
+  char      *output;
+  char      *ref;
+  char      **tar;
+  uint8_t   nTar;
+  uint32_t  nKmers;
+  uint32_t  nThreads;
+  uint32_t  min_ctx;
+  uint32_t  inverse;
+  uint64_t  *size;
   }
 Param;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// EAGLE VALUES:
-#define VERSION                1
+#define VERSION                2
 #define RELEASE                1
 
-// SYSTEM VALUES:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 #define BUFFER_SIZE            262144      
-#define PROGRESS_MIN           1000000
-#define DEFAULT_HELP           0
-#define DEFAULT_VERBOSE        0
-#define DEFAULT_IR             0
-#define DEFAULT_CTX            12
-#define DEF_MIN_CTX            12
-#define DEF_MAX_CTX            13
+#define PROGRESS_MIN           10000
+#define DEF_HELP               0
+#define DEF_FORCE              0
+#define DEF_VERBOSE            0
+#define DEF_IR                 1
+#define DEF_THREADS            1
+#define DEF_OUT                0
+#define DEF_PLOTS              0
+#define DEF_MIN_CTX            11
+#define DEF_MAX_CTX            15
 #define BGUARD                 32
 #define ALPHABET_SIZE          4
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #endif
 

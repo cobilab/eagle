@@ -5,7 +5,7 @@ echo 'set mapping cartesian
 set view 360,0,1,1 #0,0,1,1
 set auto
 set zrange [14:11]
-set xrange [1:20000]   
+set xrange [1:30500]   
 set ztics 1
 set isosamples 60
 set hidden3d
