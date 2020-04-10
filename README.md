@@ -16,7 +16,7 @@ cmake .
 make
 ```
 
-External dependencies to download and align the data requiere conda installation.
+External dependencies to download, align and visualize the data requiere conda installation.
 
 Steps to install conda:
 ```
