@@ -70,7 +70,7 @@ NAME
       Efficient computation of minimal Relative Absent Words (mRAWs).   
                                                                         
 AUTHORS                                                                 
-      D. Pratas (<last_name>@ua.pt).                                    
+      D. Pratas and J. M. Silva.                                    
                                                                         
 SYNOPSIS                                                                
       ./EAGLE [OPTION]... [FILE] [FILE]                                 
