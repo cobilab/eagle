@@ -1,8 +1,15 @@
+<br>
+<div align="center">
+  
 [![Build Status](https://travis-ci.org/cobilab/eagle.svg?branch=master)](https://travis-ci.org/cobilab/eagle)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+[![Speed](https://img.shields.io/static/v1.svg?label=Ultra-Fast&message=High%20speed%20performance&color=green)](#)
+[![Release](https://img.shields.io/static/v1.svg?label=Release&message=v2.1&color=orange)](#)
+[![TinyURL](https://img.shields.io/static/v1.svg?label=TinyURL&message=traces-pipe&color=blue)](https://tinyurl.com/eagle-tool)
 
+</div>
+<br>
 <p align="center"><img src="imgs/logo.png" alt="EAGLE" height="90" border="0" /></p>
-
 <br>
 <p align="justify">EAGLE is a program to map <b>minimal Relative Absent Words (mRAWs)</b>. EAGLE identifies and localizes the mRAWs contained in a range size of k-mers, running on a command-line environment with multi-threads to minimize computation times. It contains extensions to estimate CG distributions and create automatic plots (Gnuplot). It works on FASTA data without size limitations.</p>
 
