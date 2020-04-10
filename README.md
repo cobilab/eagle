@@ -16,8 +16,20 @@ cmake .
 make
 ```
 
-External dependencies to download and align the data can be installed with conda, using
+External dependencies to download and align the data requiere conda installation.
+
+Steps to install conda:
 ```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+Additional instructions can be found here:
+```
+https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+```
+To install the dependencies using conda:
+```
+conda install -c cobilab gto --yes
 conda install -c bioconda tabix --yes
 conda install -c bioconda bowtie2 --yes
 conda install -c bioconda samtools --yes
