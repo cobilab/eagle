@@ -16,7 +16,7 @@ cmake .
 make
 ```
 
-External dependencies to download the data can be installed with conda, using
+External dependencies to download and align the data can be installed with conda, using
 ```
 conda install -c bioconda tabix --yes
 conda install -c bioconda bowtie2 --yes
