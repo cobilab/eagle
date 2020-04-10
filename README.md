@@ -3,6 +3,7 @@
 
 <p align="center"><img src="imgs/logo.png" alt="EAGLE" height="90" border="0" /></p>
 
+<br>
 <p align="justify">EAGLE is a program to map <b>minimal Relative Absent Words (mRAWs)</b>. EAGLE identifies and localizes the mRAWs contained in a range size of k-mers, running on a command-line environment with multi-threads to minimize computation times. It contains extensions to estimate CG distributions and create automatic plots (Gnuplot). It works on FASTA data without size limitations.</p>
 
 ### Installation ###
