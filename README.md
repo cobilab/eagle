@@ -5,7 +5,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 [![Speed](https://img.shields.io/static/v1.svg?label=Ultra-Fast&message=High%20speed%20performance&color=green)](#)
 [![Release](https://img.shields.io/static/v1.svg?label=Release&message=v2.1&color=orange)](#)
-[![TinyURL](https://img.shields.io/static/v1.svg?label=TinyURL&message=traces-pipe&color=blue)](https://tinyurl.com/eagle-tool)
+[![TinyURL](https://img.shields.io/static/v1.svg?label=TinyURL&message=EAGLE&color=blue)](https://tinyurl.com/eagle-tool)
 
 </div>
 <br>
