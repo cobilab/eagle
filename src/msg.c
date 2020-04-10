@@ -21,7 +21,7 @@ void PrintMenu(void){
   "      Efficient computation of minimal Relative Absent Words (mRAWs).   \n"
   "                                                                        \n"
   "AUTHORS                                                                 \n"
-  "      D. Pratas (<last_name>@ua.pt).                                    \n"
+  "      D. Pratas and J. M. Silva.                                        \n"
   "                                                                        \n"
   "SYNOPSIS                                                                \n"
   "      ./EAGLE [OPTION]... [FILE] [FILE]                                 \n"
@@ -101,7 +101,7 @@ void PrintVersion(void){
   "                                                                        \n"
   "You may redistribute copies of it under the terms of the GNU - General  \n"
   "Public License v3 <http://www.gnu.org/licenses/gpl.html>. There is NOT  \n"
-  "ANY WARRANTY, to the extent permitted by law.                           \n"
+  "ANY WARRANTY, to the extent permitted by law. Contact => pratas@ua.pt.  \n"
   "                                                                        \n", 
   VERSION, RELEASE);
   }
