@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/cobilab/eagle.svg?branch=master)](https://travis-ci.org/cobilab/eagle)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 [![Speed](https://img.shields.io/static/v1.svg?label=Ultra-Fast&message=High%20speed%20performance&color=green)](#)
-[![Release](https://img.shields.io/static/v1.svg?label=Release&message=v2.1&color=orange)](https://github.com/cobilab/eagle/releases/tag/v2.1)
+[![Release](https://img.shields.io/static/v1.svg?label=Release&message=v2.1&color=orange)](https://github.com/cobilab/eagle/releases/tag/v2.2)
 [![TinyURL](https://img.shields.io/static/v1.svg?label=TinyURL&message=EAGLE&color=blue)](https://tinyurl.com/eagle-tool)
 
 </div>
