@@ -66,7 +66,7 @@ typedef struct{
   char      *output;
   char      *ref;
   char      **tar;
-  uint8_t   nTar;
+  uint64_t  nTar;
   uint32_t  nKmers;
   uint32_t  nThreads;
   uint32_t  min_ctx;
