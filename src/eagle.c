@@ -11,6 +11,7 @@
 #include "msg.h"
 #include "dist.h"
 #include "stats.h"
+#include "buffer.h"
 #include "filter.h"
 #include "common.h"
 #include "context.h"
@@ -465,17 +466,17 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
   char     *name2  = concatenate(P->tar[id_tar], name1);
   FILE     *Pos    = Fopen(name2, "w");
   uint64_t nSymbols = P->size[id_tar], i = 0, raw = 0, unknown = 0;
-  uint32_t n, k, idxPos, hIndex;
-  int32_t  idx = 0;
-  uint8_t  *wBuf, *rBuf, *sBuf, sym, found = 0;
+  uint64_t n, k, idxPos, hIndex;
+  int64_t  idx = 0;
+  uint8_t  *wBuf, *rBuf, sym, found = 0;
+  CBUF     *sBuf;
 
   if(P->verbose)
     fprintf(stderr, "[>] Searching target sequence %d ...\n", id_tar + 1);
 
   wBuf  = (uint8_t *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
   rBuf  = (uint8_t *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
-  sBuf  = (uint8_t *) Calloc(BUFFER_SIZE + BGUARD, sizeof(uint8_t));
-  sBuf += BGUARD;
+  sBuf  = CreateCBuffer(BUFFER_SIZE, BGUARD);
 
   #ifdef PROFILE
   char *name3   = (char *) Calloc(2048, sizeof(char));
@@ -486,6 +487,7 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
   int raw_exists = 0;
   while((k = fread(rBuf, 1, BUFFER_SIZE, Reader))){
     for(idxPos = 0 ; idxPos < k ; ++idxPos){
+
       #ifdef PROGRESS
       CalcProgress(nSymbols, i);
       #endif
@@ -494,14 +496,15 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
         ++unknown;
         continue;
         }
-      sBuf[idx] = sym;
-      GetIdx(sBuf+idx-1, M); 
+      
+      sBuf->buf[sBuf->idx] = sym;
+      GetIdx(sBuf->buf+sBuf->idx-1, M); 
       if(i > M->ctx){  // SKIP INITIAL CONTEXT, ALL "AAA..."
 
         if(M->mode == 0){ // TABLE MODE
           if(!M->array.counters[M->idx]){ // THERE IS A RAW!
             fprintf(Pos, "%"PRIu64"\t", i-M->ctx);
-            RWord(Pos, sBuf, idx, M->ctx);
+            RWord(Pos,sBuf->buf, sBuf->idx, M->ctx);
 	    raw_exists = 1;
             #ifdef PROFILE
             fprintf(Profile, "2\n");
@@ -525,7 +528,7 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
               }
           if(found == 0){ // THERE IS A RAW
             fprintf(Pos, "%"PRIu64"\t", i-M->ctx); 
-            RWord(Pos, sBuf, idx, M->ctx);
+            RWord(Pos, sBuf->buf, sBuf->idx, M->ctx);
 	    raw_exists = 1;
             #ifdef PROFILE
             fprintf(Profile, "1\n");
@@ -542,15 +545,12 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
 
 	if(raw_exists == 1){ // COUNTS THE BASE DISTRIBUTION OF THE RAWS
           for(n = 0 ; n < M->ctx ; n++)
-	     D->C[M->id].bases[sBuf[idx-n]] += 1;
+	     D->C[M->id].bases[sBuf->buf[sBuf->idx-n]] += 1;
 	  }
 
         }
 
-      if(++idx == BUFFER_SIZE){
-        memcpy(sBuf-BGUARD, sBuf+idx-BGUARD, BGUARD);
-        idx = 0;
-        }
+      UpdateCBuffer(sBuf);
       }
     }
 
@@ -565,7 +565,7 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
   #endif
   Free(rBuf);
   Free(wBuf);
-  Free(sBuf-BGUARD);
+  RemoveCBuffer(sBuf);
 
   fprintf(stdout, "[>] Kmer %u , Read %u , mRAWs: %.4lf %% ( %"PRIu64" in "
 		  "%"PRIu64" , unknown: %"PRIu64" , total: %"PRIu64" )\n",
@@ -585,8 +585,8 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
 void LoadReference(CModel *M){
 
   FILE     *Reader = Fopen(P->ref, "r");
-  int32_t  k, idxPos, header = 0;
-  int32_t  idx = 0;
+  int64_t  k, idxPos, header = 0;
+  int64_t  idx = 0;
   uint8_t  *rBuf, *sBuf, sym;
   uint64_t i = 0;
   #ifdef PROGRESS

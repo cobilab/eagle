@@ -82,7 +82,7 @@ Param;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#define BUFFER_SIZE            262144      
+#define BUFFER_SIZE            65535    
 #define PROGRESS_MIN           10000
 #define DEF_HELP               0
 #define DEF_FORCE              0
