@@ -812,9 +812,9 @@ int32_t main(int argc, char *argv[]){
 
   if(P->verbose)
     fprintf(stderr, "[>] Printing mRAWs nucleotide CG %% ...\n");
-  PrintCG(D, P->min_ctx, P->plots, P->verbose);
+    PrintCG(D, P->min_ctx, P->plots, P->verbose);
   if(P->verbose) fprintf(stderr, "[>] Done!\n");
-
+  
   if(P->verbose)
     fprintf(stderr, "[>] Printing CG profiles ...\n");
   for(x = 0 ; x < P->nTar ; ++x)

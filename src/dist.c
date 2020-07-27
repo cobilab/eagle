@@ -41,7 +41,7 @@ void PrintDist(Dist *D, uint32_t min_ctx){
 void PrintCG(Dist *D, uint32_t min_ctx, uint32_t p, uint32_t v){
 
   int x;
-  uint64_t tot, at, cg;
+  uint64_t tot = 0, at = 0, cg = 0;
   double at100 = 0, cg100 = 0;
   FILE *OUT = Fopen("CG-data.eg", "w");
   fprintf(stderr, "+--------------------------------------------------+\n");
@@ -56,15 +56,16 @@ void PrintCG(Dist *D, uint32_t min_ctx, uint32_t p, uint32_t v){
     if(at != 0) at100 = (double) at/tot*100;
     if(cg != 0) cg100 = (double) cg/tot*100;
     if(at == 0 || cg == 0)
-    fprintf(stderr, "| %6u | %10u [--.-%%] | %10u [--.-%%] |\n", x + min_ctx,
-    at, at100, cg, cg100);
+      fprintf(stderr, "| %6u | %10u [--.-%%] | %10u [--.-%%] |\n", 
+      x + min_ctx, at, at100, cg, cg100);
     else
-    fprintf(stderr, "| %6u | %10u [%3.1lf%%] | %10u [%3.1lf%%] |\n", x + min_ctx,
-    at, at100, cg, cg100);
+      fprintf(stderr, "| %6u | %10u [%3.1lf%%] | %10u [%3.1lf%%] |\n", 
+      x + min_ctx, at, at100, cg, cg100);
     if(at != 0 && cg != 0)
-      fprintf(OUT, "%u\t%.3lf\t%.3lf\n", x + min_ctx, at, cg);
+      fprintf(OUT, "%u\t%.3lf\t%.3lf\n", x + min_ctx, at100, cg100);
     }
   fclose(OUT);
+
   fprintf(stderr, "+--------+--------------------+--------------------+\n");
 
   FILE *OUT2 = Fopen("CGplot.sh",  "w");
