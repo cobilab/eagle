@@ -65,13 +65,13 @@ or
 </pre>
 These will print the following options:
 ```
-                                                                        
+
       ███████  ███████  ████████  ██       ███████                      
       ██       ██   ██  ██        ██       ██                           
       █████    ███████  ██  ████  ██       █████                        
       ██       ██   ██  ██    ██  ██       ██                           
       ███████  ██   ██  ████████  ███████  ███████                      
-                                                                        
+                                                    
 NAME                                                                    
       EAGLE v2.3 2015-2020                                            
       Efficient computation of minimal Relative Absent                  
