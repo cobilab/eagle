@@ -362,13 +362,13 @@ void LoadNames(char *prefix){
 // - - - - - - - - - - - - - - S P L I T   F I L E S - - - - - - - - - - - - -
 //
 
-uint64_t SplitFiles(char *fn, uint8_t v){
+uint64_t SplitFiles(char *fn){
 
   FILE     *IN = Fopen(fn, "r"), *OUT = NULL;
   uint64_t indexHeader = 0, indexSymbol = 0, nFiles = 0;
   char     value;
       
-  if(v) fprintf(stderr, "[>] Splitting reads:\n");
+  if(P->verbose) fprintf(stderr, "[>] Splitting reads ...\n");
   
   int header = 0;
   while((value = fgetc(IN)) != EOF){
@@ -378,7 +378,8 @@ uint64_t SplitFiles(char *fn, uint8_t v){
       if(++indexHeader > 1) fclose(OUT);		 
       char name[1024];
       sprintf(name, "%s-R%u", fn, indexHeader);
-      if(v) fprintf(stderr, "    [>] Splitted read .............. %s\n", name);
+      if(P->vv) 
+        fprintf(stderr, "    [>] Splitted read .............. %s\n", name);
       OUT = Fopen(name, "w");
       continue;
       case '\n': header = 0; continue;
@@ -391,8 +392,8 @@ uint64_t SplitFiles(char *fn, uint8_t v){
   fclose(OUT);
   fclose(IN);
 
-  if(v){
-    fprintf(stderr, "[>] Splitting reads done!\n");
+  if(P->verbose){
+    fprintf(stderr, "[>] Done!\n");
     fprintf(stderr, "[>] Total number of reads: %u\n", indexHeader);
     }
 
@@ -471,7 +472,7 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
   uint8_t  *wBuf, *rBuf, sym, found = 0;
   CBUF     *sBuf;
 
-  if(P->verbose)
+  if(P->vv)
     fprintf(stderr, "[>] Searching target sequence %d ...\n", id_tar + 1);
 
   wBuf  = (uint8_t *) Calloc(BUFFER_SIZE,          sizeof(uint8_t));
@@ -567,12 +568,13 @@ uint32_t Target(CModel *M, Dist *D, uint32_t id_tar){
   Free(wBuf);
   RemoveCBuffer(sBuf);
 
-  fprintf(stdout, "[>] Kmer %u , Read %u , mRAWs: %.4lf %% ( %"PRIu64" in "
-		  "%"PRIu64" , unknown: %"PRIu64" , total: %"PRIu64" )\n",
-		  M->ctx, id_tar + 1, (double) raw / (nSymbols-unknown) * 
-		  100.0, raw, nSymbols-unknown, unknown, nSymbols);
+  if(P->vv)
+    fprintf(stdout, "[>] Kmer %u , Read %u , mRAWs: %.4lf %% ( %"PRIu64" in "
+    "%"PRIu64" , unknown: %"PRIu64" , total: %"PRIu64" )\n", M->ctx, id_tar+1, 
+    (double) raw/(nSymbols-unknown)*100.0, raw, nSymbols-unknown, unknown, 
+    nSymbols);
 
-  if(P->verbose)
+  if(P->vv)
     fprintf(stderr, "[>] Done!                     \n");  // SPACES ARE VALID!
 
   return raw;
@@ -593,7 +595,7 @@ void LoadReference(CModel *M){
   uint64_t size = NBytesInFile(Reader);
   #endif
 
-  if(P->verbose == 1){
+  if(P->verbose){
     if(P->nThreads == 0){
       fprintf(stderr, "[>] Building reference model (k=%u) ...\n", M->ctx);
       }
@@ -645,7 +647,7 @@ void LoadReference(CModel *M){
   Free(sBuf-BGUARD);
   fclose(Reader);
 
-  if(P->verbose == 1){
+  if(P->verbose){
     if(P->nThreads == 0){
       fprintf(stderr, "[>] Done!                    \n");  // SPACES ARE VALID  
       }
@@ -672,8 +674,8 @@ void *LoadRefThread(void *Par){
 int32_t main(int argc, char *argv[]){
 
   char **p = *&argv;
-  uint32_t n, verbose, threads, nThreads, force, out, inversions, plots, 
-	   x, min, max, nKmers, idx_reads = 0, idx_model = 0;
+  uint32_t n, x, verbose, vv, threads, nThreads, force, out, inversions, 
+	   profiles, plots, min, max, nKmers, idx_reads = 0, idx_model = 0;
 
   if(ArgsState(DEF_HELP, p, argc, "-h", "--help") || argc < 3){
     PrintMenu();
@@ -686,15 +688,19 @@ int32_t main(int argc, char *argv[]){
     }
 
   verbose    = ArgsState (DEF_VERBOSE, p, argc, "-v",   "--verbose");
+  vv         = ArgsState (DEF_VV,      p, argc, "-vv",  "--very-verbose");
   force      = ArgsState (DEF_FORCE,   p, argc, "-f",   "--force");
   threads    = ArgsState (DEF_THREADS, p, argc, "-t",   "--threads");
   inversions = ArgsState (DEF_IR,      p, argc, "-i",   "--ignore-ir");
+  profiles   = ArgsState (DEF_PROF,    p, argc, "-c",   "--ignore-profiles");
   out        = ArgsState (DEF_OUT,     p, argc, "-o",   "--stdout");
   plots      = ArgsState (DEF_PLOTS,   p, argc, "-p",   "--plots");
   min        = ArgsNum   (DEF_MIN_CTX, p, argc, "-min", "--minimum", 
 		         MIN_HASH_CTX, MAX_HASH_CTX);
   max        = ArgsNum   (DEF_MAX_CTX, p, argc, "-max", "--maximum", 
 		         MIN_HASH_CTX, MAX_HASH_CTX);
+
+  if(vv) verbose = 1;
 
   CheckMinMax(min, max);
 
@@ -708,8 +714,10 @@ int32_t main(int argc, char *argv[]){
   CheckFileIstFASTA(argv[argc-1]);
 
   P           = (Param *) Calloc(nKmers, sizeof(Param));
+  P->verbose  = verbose;
+  P->vv       = vv;
   P->ref      = argv[argc-2];
-  P->nTar     = SplitFiles(argv[argc-1], verbose);
+  P->nTar     = SplitFiles(argv[argc-1]);
   P->tar      = (char **) Malloc(P->nTar * sizeof(char *));
   P->output   = CloneString(argv[argc-1]);
 
@@ -717,9 +725,9 @@ int32_t main(int argc, char *argv[]){
 
   P->nKmers   = nKmers;
   P->min_ctx  = min;
-  P->verbose  = verbose;
   P->plots    = plots;
   P->inverse  = inversions;
+  P->profiles = profiles;
   P->nThreads = nThreads;
 
   if(P->verbose) PrintArgs(P);
@@ -815,12 +823,14 @@ int32_t main(int argc, char *argv[]){
     PrintCG(D, P->min_ctx, P->plots, P->verbose);
   if(P->verbose) fprintf(stderr, "[>] Done!\n");
   
-  if(P->verbose)
-    fprintf(stderr, "[>] Printing CG profiles ...\n");
-  for(x = 0 ; x < P->nTar ; ++x)
-    PrintCGProfile(x);
-  AverageCGPlot();
-  if(P->verbose) fprintf(stderr, "[>] Done!\n"); 
+  if(P->profiles){
+    if(P->verbose)
+      fprintf(stderr, "[>] Printing CG profiles ...\n");
+    for(x = 0 ; x < P->nTar ; ++x)
+      PrintCGProfile(x);
+    AverageCGPlot();
+    if(P->verbose) fprintf(stderr, "[>] Done!\n"); 
+    }
 
   if(P->verbose)
     fprintf(stderr, "[>] Running mink ...\n");

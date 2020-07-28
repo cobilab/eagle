@@ -60,6 +60,7 @@ CModels;
 
 typedef struct{
   uint8_t   verbose;
+  uint8_t   vv;
   uint8_t   force;
   uint8_t   plots;
   uint8_t   stdout;
@@ -71,6 +72,7 @@ typedef struct{
   uint32_t  nThreads;
   uint32_t  min_ctx;
   uint32_t  inverse;
+  uint32_t  profiles;
   uint64_t  *size;
   }
 Param;
@@ -78,7 +80,7 @@ Param;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #define VERSION                2
-#define RELEASE                1
+#define RELEASE                3
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -87,12 +89,14 @@ Param;
 #define DEF_HELP               0
 #define DEF_FORCE              0
 #define DEF_VERBOSE            0
+#define DEF_VV                 0
 #define DEF_IR                 1
-#define DEF_THREADS            1
 #define DEF_OUT                0
+#define DEF_PROF               1
 #define DEF_PLOTS              0
 #define DEF_MIN_CTX            11
 #define DEF_MAX_CTX            15
+#define DEF_THREADS            1
 #define BGUARD                 32
 #define ALPHABET_SIZE          4
 
