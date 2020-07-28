@@ -66,73 +66,81 @@ or
 These will print the following options:
 ```
                                                                         
-             ███████╗  █████╗   ██████╗  ██╗      ███████╗              
-             ██╔════╝ ██╔══██╗ ██╔════╝  ██║      ██╔════╝              
-             █████╗   ███████║ ██║  ███╗ ██║      █████╗                
-             ██╔══╝   ██╔══██║ ██║   ██║ ██║      ██╔══╝                
-             ███████╗ ██║  ██║ ╚██████╔╝ ███████╗ ███████╗              
-             ╚══════╝ ╚═╝  ╚═╝  ╚═════╝  ╚══════╝ ╚══════╝              
+      ███████  ███████  ████████  ██       ███████                      
+      ██       ██   ██  ██        ██       ██                           
+      █████    ███████  ██  ████  ██       █████                        
+      ██       ██   ██  ██    ██  ██       ██                           
+      ███████  ██   ██  ████████  ███████  ███████                      
                                                                         
 NAME                                                                    
-      EAGLE v2.1 2015-2020                                            
-      Efficient computation of minimal Relative Absent Words (mRAWs).   
+      EAGLE v2.3 2015-2020                                            
+      Efficient computation of minimal Relative Absent                  
+      Words (mRAWs) and its associated GC distributions,                
+      profiles, and patterns.                                           
                                                                         
 AUTHORS                                                                 
-      D. Pratas and J. M. Silva.                                    
+      D. Pratas and J. M. Silva.                                        
                                                                         
 SYNOPSIS                                                                
       ./EAGLE [OPTION]... [FILE] [FILE]                                 
                                                                         
 SAMPLE                                                                  
-      Run: ./EAGLE -v -F -i -min 11 -max 16 human.fa SARS-CoV2.fa       
+      Run: ./EAGLE -v -min 11 -max 16 human.fa SARS-CoV2.fa             
                                                                         
 DESCRIPTION                                                             
-      Localization and quantification of minimal Relative Absent Words. 
+      Localization and quantification of minimal Relative               
+      Absent Words (mRAWs) and GC associated measures                   
                                                                         
       -h,  --help                                                       
-           usage guide (help menu).                                     
+           usage guide (help menu)                                      
                                                                         
       -V,  --version                                                    
-           display program and version information.                     
+           display program and version information                      
                                                                         
       -f,  --force                                                      
-           force mode. Overwrites old files.                            
+           force mode. Overwrites old files                             
                                                                         
       -v,  --verbose                                                    
-           verbose mode (more information).                             
+           verbose mode (more information)                              
+                                                                        
+      -vv, --very-verbose                                               
+           very verbose mode (much more information)                    
                                                                         
       -t,  --threads                                                    
-           does NOT use threads if flag is set (slower).                
+           does NOT use threads if flag is set (slower)                 
                                                                         
       -i,  --ignore-ir                                                  
-           does NOT use inverted repeats if flag is set.                
+           does NOT use inverted repeats if flag is set                 
+                                                                        
+      -c,  --ignore-profiles                                            
+           does NOT compute GC profiles                                 
                                                                         
       -o,  --stdout                                                     
-           write to standard output.                                    
+           write overall statistics to standard output                  
                                                                         
       -p,  --plots                                                      
-           print Shell code to generate plots (gnuplot).                
+           print Shell code to generate plots (gnuplot)                 
                                                                         
       -min [NUMBER],  --minimum [NUMBER]                                
-           k-mer minimum size (usually 10).                             
+           k-mer minimum size (usually 10)                              
                                                                         
       -max [NUMBER],  --maximum [NUMBER]                                
-           k-mer maximum size (usually 16).                             
+           k-mer maximum size (usually 16)                              
                                                                         
       [FILE]                                                            
-           Input FASTA reference (e.g. human genome) -- MANDATORY.      
-           The content of this file will be loaded in the models.       
+           Input FASTA reference (e.g. human) -- MANDATORY.             
+           This content will be loaded in the models.                   
                                                                         
       [FILE]                                                            
-           Input FASTA target (e.g. multi SARS-CoV2) -- MANDATORY.      
-           The mRAWs will be mapped on the content of this file.        
+           Input FASTA target (e.g. SARS-CoV-2) -- MANDATORY.           
+           The mRAWs will be mapped on this content file.               
                                                                         
 COPYRIGHT                                                               
-      Copyright (C) 2015-2020, IEETA/DETI, University of Aveiro.        
+      Copyright (C) 2014-2020, IEETA/DETI, University of Aveiro.        
       This is a Free software, under GPLv3. You may redistribute        
       copies of it under the terms of the GNU - General Public          
       License v3 <http://www.gnu.org/licenses/gpl.html>. There          
-      is NOT ANY WARRANTY, to the extent permitted by law.
+      is NOT ANY WARRANTY, to the extent permitted by law. 
 
 ```
 
@@ -149,7 +157,7 @@ version 1.0:
 
 ### Issues ###
 
-For any issue let us know at [issues link](https://github.com/pratas/eagle/issues).
+For any issue let us know at [issues link](https://github.com/cobilab/eagle/issues).
 
 ### License ###
 
