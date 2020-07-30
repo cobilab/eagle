@@ -142,11 +142,11 @@ COPYRIGHT
 ### Citation ###
 
 Version 2.2:
- * Article under Review
+ * D. Pratas, J. M. Silva. Persistent minimal sequences of SARS-CoV-2. Bioinformatics (2020): btaa686. [URL](https://doi.org/10.1093/bioinformatics/btaa686). 
 
 
 version 1.0:
- * R. M. Silva, D. Pratas, L. Castro, A. J. Pinho & P. J. S. G. Ferreira. Bioinformatics (2015): btv189.
+ * R. M. Silva, D. Pratas, L. Castro, A. J. Pinho & P. J. S. G. Ferreira. Three minimal sequences found in Ebola virus genomes and absent from human DNA. Bioinformatics (2015): btv189.
 [URL](http://doi.org/10.1093/bioinformatics/btv189).
 
 ### Issues ###
